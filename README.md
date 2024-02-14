@@ -22,7 +22,7 @@ Because of multiple reasons:
 
 1. NVIDIA smi doesn't change fan speed
 2. Can't use nvidia-settings under Wayland to control the fans
-3. GeForce Experience needs internet to functio and it's pretty bad
+3. GeForce Experience needs internet to work and it's pretty bad
 
 Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans throough NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on display server.
 
