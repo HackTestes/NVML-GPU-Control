@@ -28,21 +28,23 @@ Now that NVIDIA added the functions to work on any CUDA supported card on driver
 
 ## How to use
 
-- You must first list all cards that are connect
+- You must first list all cards that are connect, so you can get the name
 
 ```
+ python.exe .\nvml_gpu_control.py list
 ```
 
-- Then you can select a target
-
+- Then you can select a target by name
 ```
+python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
 ```
 
 - And the fan speed for each termperature level 
 ```
+ python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
-Note that it does not current support fan curve (or linear), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each tempo associated with speed is ordered automatically.
+Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staricase graph)
 
 ```
 Temp : speed(%)
@@ -53,7 +55,8 @@ Temp : speed(%)
 
 3. 20 : 30 (>=20°C - 30%)
 
-4. Default speed
+4. Default speed (DS)
+
 ___________________________
 
 41°C - 100%
@@ -64,8 +67,44 @@ ___________________________
 
 ```
 
+#### Usage docs
 
-### Setting up services
+```
+python.exe .\nvml_gpu_control.py <ACTION> <OPTIONS>
+
+ACTIONS
+    help
+          Display help text
+
+    list
+          List all available GPUs connected to the system by printing its name and UUID
+
+    fan-control
+          Monitor and controls the fan speed of the selected card (you must select a target card)
+
+
+OPTIONS
+
+    --target OR -t <GPU_NAME>
+          Select a target GPU by its name
+
+    --time-interval OR -ti <TIME_SECONDS>
+          Time period to wait before probing the GPU again
+
+    --dry-run OR -dr
+          Run the program, but don't change/set anything. Useful for testing the behavior of the program
+
+    --speed-pair OR -sp <TEMP_CELSIUS:SPEED_PERCENTAGE,TEMP_CELSIUS:SPEED_PERCENTAGE...>
+          A comma separated list of pairs of temperature in celsius and the fan speed in % (temp:speed) defining basic settings for a fan curve
+
+    --default-speed OR -ds <FAN_SPEED_PERCENTAGE>
+          Set a default speed for when there is no match for the fan curve settings
+
+
+```
+
+
+### Setting up services (under development)
 
 This section will present some simple commands to setup services that start as admin and run the configured program. 
 

@@ -67,7 +67,7 @@ def control_and_monitor(gpu_handle, configuration):
         current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
 
         log_helper(f'Current temp: {current_temp}')
-        log_helper(f'Current speed: {current_speed}')
+        log_helper(f'Current speed: {current_speed}') # Minitor for fan fan speed changes and reajust! 
 
         found_temp_match = False
         for pair in configuration.temp_speed_pair:
