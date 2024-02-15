@@ -1,6 +1,8 @@
 import unittest
+from unittest.mock import Mock
 import sys
 import parse_args
+import helper_functions as main_funcs
 
 # Test command: python.exe .\tests.py -b
 
@@ -62,7 +64,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.time_interval, 5.0)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--time-interval', '0.5', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ti', '0.5', '-t', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.time_interval, 0.5)
 
@@ -80,6 +82,9 @@ class TestMethods(unittest.TestCase):
             parse_args.TempSpeedPair(10, 30),
             parse_args.TempSpeedPair(0, 0),
         ]
+        self.assertEqual(expected_output, config.temp_speed_pair)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-sp', '0:0,10:30,20:50,35:75,40:100', '-t', 'RTX 3080'])
         self.assertEqual(expected_output, config.temp_speed_pair)
 
     def test_parse_args_temp_speed_pair_sort(self):
@@ -120,6 +125,17 @@ class TestMethods(unittest.TestCase):
         with self.assertRaises(parse_args.InvalidFanSpeed):
             parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '10:-100'])
 
+    def test_parse_args_dry_run(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--dry-run', '-t', 'RTX 3080'])
+        self.assertEqual(config.dry_run, True)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-dr', '-t', 'RTX 3080'])
+        self.assertEqual(config.dry_run, True)
+
+        # Defaulf value should always be False
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
+        self.assertEqual(config.dry_run, False)
+
     def test_parse_args_invalid_option(self):
 
         with self.assertRaises(parse_args.InvalidOption):
@@ -143,7 +159,24 @@ class TestMethods(unittest.TestCase):
     def test_parse_args_sane_checks(self):
 
         with self.assertRaises(parse_args.InvalidConfig):
-            parse_args.parse_cmd_args(['.python_script', 'fan-control']) 
+            parse_args.parse_cmd_args(['.python_script', 'fan-control'])
+
+
+    # GPU Functions - I wull need to improve the tests later
+
+    def test_gpu_something(self):
+        # Mocking
+        import pynvml
+
+        pynvml.nvmlDeviceGetCount = Mock(return_value=1)
+        pynvml.nvmlDeviceGetHandleByIndex = Mock(return_value=0)
+        pynvml.nvmlDeviceGetName = Mock(return_value='RTX 3080')
+
+        # Main function
+        main_funcs.list_gpus()
+
+        # Fail
+        self.assertTrue(True)
 
 
 

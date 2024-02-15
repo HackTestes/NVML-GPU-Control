@@ -27,6 +27,7 @@ class Configuration:
         self.curve_type = "fixed" # Currently for internal usage only (I want to later add calculation for lines and curves fuctions)
         self.default_speed = 50 # Percentage
         self.time_interval = 1.0 # In seconds
+        self.dry_run = False
 
 class TempSpeedPair:
 
@@ -58,6 +59,7 @@ def validate_config(config):
         print("You did not select a target GPU")
         raise InvalidConfig("No GPU was selected")
 
+    # A user will always have a default speed set, so I don't think this check is necessary
     #if len(config.temp_speed_pair) == 0:
     #    print("You did not create fan points (see --speed-pairs)")
     #    raise InvalidConfig("Has no fan curve")
@@ -134,9 +136,12 @@ def parse_cmd_args(args):
             configuration.default_speed = int(args[i+1])
             i += 1 # Skip the next iteration
 
-        elif (arg == '--time-interval' or arg == '-t'):
+        elif (arg == '--time-interval' or arg == '-ti'):
             configuration.time_interval = float(args[i+1])
             i += 1 # Skip the next iteration
+
+        elif (arg == '--dry-run' or arg == '-dr'):
+            configuration.dry_run = True
 
         else:
             print(f'Invalid option: {arg}')

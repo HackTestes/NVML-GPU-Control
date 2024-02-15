@@ -1,32 +1,36 @@
 from pynvml import *
+import sys
+import helper_functions as main_funcs
+import parse_args
 
-nvmlInit()
+def main():
+    
+    # Getting a configuration obj
+    config = parse_args.parse_cmd_args(sys.argv)
 
-print(f"Driver Version: {nvmlSystemGetDriverVersion()}")
+    try:
+        # Starting nvml
+        nvmlInit()
 
+        if float(nvmlSystemGetDriverVersion()) < 520:
+            print('WARNING: You are running an unsupported driver, you may have problems')
 
-deviceCount = nvmlDeviceGetCount()
+        match config.action:
 
+            # Help doesn't require nvml (TODO change code paths)
+            case 'help':
+                main_funcs.print_help()
 
-for i in range(deviceCount):
-    handle = nvmlDeviceGetHandleByIndex(i)
-    print(f"Device {i} : {nvmlDeviceGetName(handle)}")
+            case 'list':
+                main_funcs.list_gpus()
 
-    print(f"Device fan speed : {nvmlDeviceGetFanSpeed(handle)}%")
-    print(f"Temperature {nvmlDeviceGetTemperature(handle, 0)}°C")
+            case 'fan-control':
+                main_funcs.fan_control(config)
+    
+    # One should call shutdown with or without erros, this is why I am using finally
+    finally:
+        print('Calling nvml shutdown and teminating the program')
+        nvmlShutdown()
 
-    # This is not really the number of fan, but the number of controllers
-    fan_count = nvmlDeviceGetNumFans(handle)
-    print(f"Fan count {fan_count}")
-
-    for fan_idx in range(fan_count):
-        fan_speed = nvmlDeviceGetFanSpeed_v2(handle, fan_idx)
-        print(f"Fan {fan_idx} : {fan_speed}%")
-
-        # Setting the fan speed DANGEROUS!
-        target_fan_speed = 100
-        nvmlDeviceSetFanSpeed_v2(handle, fan_idx, target_fan_speed)
-        print(f"Target fan speed set: {target_fan_speed}%")
-
-
-nvmlShutdown()
+if __name__ == '__main__':
+    main()
