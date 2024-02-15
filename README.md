@@ -2,6 +2,8 @@
 
 This is a small program that uses the NVIDIA Management Library (NVML) to monitor GPU temperature and set fan speed. NVML is being used, because it is OS and display sever agnostic (that means it doesn't depend on X11 or Windows). Another important reason is that the official NVIDIA tool (NVIDIA smi) does not currently support fan control.
 
+Note: this project is NOT endorsed by NVIDIA
+
 ## Supported hardware
 
 - Any NVIDIA CUDA suported card with a driver higher or equal to version 520 
@@ -24,11 +26,11 @@ Because of multiple reasons:
 2. Can't use nvidia-settings under Wayland to control the fans
 3. GeForce Experience needs internet to work and it's pretty bad
 
-Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans throough NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on display server.
+Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans throough NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on a display server.
 
 ## How to use
 
-- You must first list all cards that are connect, so you can get the name
+- You must first list all cards that are connected, so you can get the name
 
 ```
  python.exe .\nvml_gpu_control.py list
@@ -42,6 +44,11 @@ python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
 - And the fan speed for each termperature level 
 ```
  python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+```
+
+- You could also use the `--dry-run` for testing! 
+```
+ python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staricase graph)
@@ -106,7 +113,7 @@ OPTIONS
 
 ### Setting up services (under development)
 
-This section will present some simple commands to setup services that start as admin and run the configured program. 
+This section will present some simple commands to setup services that start as admin and run the configured program. You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID in Linux).
 
 #### Windows
 
