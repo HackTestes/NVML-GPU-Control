@@ -8,13 +8,15 @@ assignees: HackTestes
 ---
 
 **System configuration**
-* Driver version: 
-    * [ ] Uses proprietary NVIDIA driver
+* [ ] Uses proprietary NVIDIA driver
+    * Driver version: 
 * GPU: 
 * Operating system and version (or Linux distro): 
 * Display server (only for Linux)
     * [ ] Wayland
     * [ ] X11/Xorg
+* Python version (python --version):
+* Command used: what have you typed to execute the program, `python ./nvml_control list `
 
 **Describe the bug**
 A clear and concise description of what the bug is.
