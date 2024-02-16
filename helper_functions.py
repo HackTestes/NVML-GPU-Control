@@ -5,7 +5,7 @@ import time
 # Timestamp: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 def log_helper(msg):
-    print(f'LOG[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]: {msg}')
+    print(f'LOG[{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}]: {msg}')
 
 def print_help():
     print('HELP TEXT')
