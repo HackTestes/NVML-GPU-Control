@@ -2,7 +2,14 @@ import pynvml
 import datetime
 import time
 
-# Timestamp: datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+class UnsupportedDriverVersion(Exception):
+    pass
+
+def check_driver_version(driver_version_str):
+    major = int(driver_version_str.split('.')[0])
+
+    if major < 520:
+        raise UnsupportedDriverVersion('Driver version is lower than 520')
 
 def log_helper(msg):
     print(f'LOG[{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}]: {msg}')

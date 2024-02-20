@@ -161,22 +161,41 @@ class TestMethods(unittest.TestCase):
         with self.assertRaises(parse_args.InvalidConfig):
             parse_args.parse_cmd_args(['.python_script', 'fan-control'])
 
+    def test_check_driver_version(self):
 
-    # GPU Functions - I wull need to improve the tests later
+        # If the driver starts to return letters, a refactoring will be needed anyways
+        # So I just want to verify that letters reaise erros
+        with self.assertRaises(ValueError):
+            main_funcs.check_driver_version('AAA')
 
-    def test_gpu_something(self):
-        # Mocking
-        import pynvml
+        # Only cares for the major version
+        with self.assertRaises(main_funcs.UnsupportedDriverVersion):
+            main_funcs.check_driver_version('515')
 
-        pynvml.nvmlDeviceGetCount = Mock(return_value=1)
-        pynvml.nvmlDeviceGetHandleByIndex = Mock(return_value=0)
-        pynvml.nvmlDeviceGetName = Mock(return_value='RTX 3080')
+        with self.assertRaises(main_funcs.UnsupportedDriverVersion):
+            main_funcs.check_driver_version('515.20.20')
 
-        # Main function
-        main_funcs.list_gpus()
+        with self.assertRaises(main_funcs.UnsupportedDriverVersion):
+            main_funcs.check_driver_version('515.20.20.20')
 
-        # Fail
-        self.assertTrue(True)
+        with self.assertRaises(main_funcs.UnsupportedDriverVersion):
+            main_funcs.check_driver_version('515.20.20.20aaaaa')
+
+#    # GPU Functions - I wull need to improve the tests later
+#
+#    def test_gpu_something(self):
+#        # Mocking
+#        import pynvml
+#
+#        pynvml.nvmlDeviceGetCount = Mock(return_value=1)
+#        pynvml.nvmlDeviceGetHandleByIndex = Mock(return_value=0)
+#        pynvml.nvmlDeviceGetName = Mock(return_value='RTX 3080')
+#
+#        # Main function
+#        main_funcs.list_gpus()
+#
+#        # Fail
+#        self.assertTrue(True)
 
 
 

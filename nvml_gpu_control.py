@@ -12,7 +12,11 @@ def main():
         # Starting nvml
         nvmlInit()
 
-        if float(nvmlSystemGetDriverVersion()) < 520:
+        # Verify driver version
+        try:
+            main_funcs.check_driver_version(nvmlSystemGetDriverVersion())
+
+        except main_funcs.UnsupportedDriverVersion:
             print('WARNING: You are running an unsupported driver, you may have problems')
 
         match config.action:

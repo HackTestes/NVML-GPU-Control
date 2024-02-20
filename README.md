@@ -43,12 +43,12 @@ python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
 
 - And the fan speed for each termperature level 
 ```
- python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+sudo python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
 - You could also use the `--dry-run` for testing! 
 ```
- python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
+python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staricase graph)
@@ -129,18 +129,37 @@ Please, check MS's documentation:
 ```
 $params = @{
   Name = "GpuFanControl"
-  BinaryPathName = 'C:\WINDOWS\System32\python3.exe -k netsvcs'
+  BinaryPathName = 'C:\Program Files\Python312\python.exe C:\System32\GpuFanControl\nvml_gpu_control.py -t "RTX 3080" -sp 10:20,20:35:30:50,35:100'
   DisplayName = "GPU Fan Control"
   StartupType = "Automatic"
   Description = "A simple service to automatically setup NVIDIA GPU fan speed"
+  Credential = $(Get-Credential -UserName 'Admin user')
 }
-New-Service @params
+New-Service @params -WhatIf
 
 or 
 
-sc.exe config 'servicename-notdisplayname' obj='\Administrator' password='secret'
+sc.exe config 'servicename-notdisplayname' obj='\Administrator'
 
 ```
 
 #### Linux (systemd / cronjob)
 
+##### Systemd setup
+
+1. Create a service file
+```
+[Unit]
+Description=NVIDIA Fan Control service
+ConditionUser=0
+
+[Service]
+Type=simple
+WorkingDirectory=/
+ExecStart=/usr/bin/python3 /usr/bin/nvml_gpu_control.py -t "RTX 3080" -sp 10:20,20:35:30:50,35:100
+Restart=always
+KillSignal=SIGQUIT
+
+[Install]
+WantedBy=multi-user.target
+```
