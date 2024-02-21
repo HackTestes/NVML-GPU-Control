@@ -89,6 +89,9 @@ ACTIONS
     fan-control
           Monitor and controls the fan speed of the selected card (you must select a target card)
 
+    fan-policy <--auto|--manual>
+          Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
+
 
 OPTIONS
 
@@ -106,6 +109,12 @@ OPTIONS
 
     --default-speed OR -ds <FAN_SPEED_PERCENTAGE>
           Set a default speed for when there is no match for the fan curve settings
+
+    --manual
+          Sets the fan policy to manual
+
+    --auto
+          Sets the fan policy to automatic (vBIOS contolled)
 
 
 ```

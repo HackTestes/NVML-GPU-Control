@@ -30,6 +30,9 @@ def main():
 
             case 'fan-control':
                 main_funcs.fan_control(config)
+
+            case 'fan-policy':
+                main_funcs.fan_policy(config)
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:

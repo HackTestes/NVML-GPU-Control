@@ -28,6 +28,7 @@ class Configuration:
         self.default_speed = 50 # Percentage
         self.time_interval = 1.0 # In seconds
         self.dry_run = False
+        self.fan_policy = ''
 
 class TempSpeedPair:
 
@@ -64,6 +65,12 @@ def validate_config(config):
     #    print("You did not create fan points (see --speed-pairs)")
     #    raise InvalidConfig("Has no fan curve")
 
+    # fan-policy needs a mode
+    if config.action == 'fan-policy':
+        if config.fan_policy == '':
+            print("You did not select a fan policy: autmatic or manual")
+            raise InvalidConfig("No fan policy was selected")
+
 
 def parse_cmd_args(args):
     
@@ -88,6 +95,9 @@ def parse_cmd_args(args):
 
     elif (action == 'fan-control'):
         configuration.action = 'fan-control'
+
+    elif (action == 'fan-policy'):
+        configuration.action = 'fan-policy'
 
     else:
         print(f'Invalid action: {action}')
@@ -142,6 +152,13 @@ def parse_cmd_args(args):
 
         elif (arg == '--dry-run' or arg == '-dr'):
             configuration.dry_run = True
+
+        # For the fan-policy action
+        elif (arg == '--auto'):
+            configuration.fan_policy = 'automatic'
+
+        elif (arg == '--manual'):
+            configuration.fan_policy = 'manual'
 
         else:
             print(f'Invalid option: {arg}')

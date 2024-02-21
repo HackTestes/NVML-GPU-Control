@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock
 import sys
+import ctypes
 import parse_args
 import helper_functions as main_funcs
 
@@ -23,6 +24,10 @@ class TestMethods(unittest.TestCase):
     def test_parse_args_fan_control(self):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--target', 'RTX 4080'])
         self.assertEqual( config.action, 'fan-control')
+
+    def test_parse_args_fan_policy(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--auto'])
+        self.assertEqual( config.action, 'fan-policy')
 
     def test_parse_args_invalid_action(self):
         with self.assertRaises(parse_args.InvalidAction):
@@ -136,6 +141,14 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
         self.assertEqual(config.dry_run, False)
 
+    def test_parse_args_fan_policy_auto(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--auto'])
+        self.assertEqual( config.fan_policy, 'automatic')
+
+    def test_parse_args_fan_policy_manual(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--manual'])
+        self.assertEqual( config.fan_policy, 'manual')
+
     def test_parse_args_invalid_option(self):
 
         with self.assertRaises(parse_args.InvalidOption):
@@ -158,8 +171,13 @@ class TestMethods(unittest.TestCase):
 
     def test_parse_args_sane_checks(self):
 
+        # No target gpu
         with self.assertRaises(parse_args.InvalidConfig):
             parse_args.parse_cmd_args(['.python_script', 'fan-control'])
+
+        # No fan policy
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'fan-policy', '-t', 'RTX 3080'])
 
     def test_check_driver_version(self):
 
@@ -180,6 +198,16 @@ class TestMethods(unittest.TestCase):
 
         with self.assertRaises(main_funcs.UnsupportedDriverVersion):
             main_funcs.check_driver_version('515.20.20.20aaaaa')
+
+    def test_fan_policy_info_msg(self):
+        msg = main_funcs.fan_policy_info_msg(ctypes.c_uint(0).value)
+        self.assertEqual('Current fan control policy is automatic', msg)
+
+        msg = main_funcs.fan_policy_info_msg(ctypes.c_uint(1).value)
+        self.assertEqual('Current fan control policy is manual', msg)
+
+        msg = main_funcs.fan_policy_info_msg(ctypes.c_uint(100).value)
+        self.assertEqual('Unknown fan control policy', msg)
 
 #    # GPU Functions - I wull need to improve the tests later
 #

@@ -1,6 +1,7 @@
 import pynvml
 import datetime
 import time
+import ctypes
 
 class UnsupportedDriverVersion(Exception):
     pass
@@ -33,12 +34,13 @@ def print_GPU_info(gpu_handle):
     log_helper(f"Fan controller count {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
 
 def fan_control(configuration):
-    gpu_handle = get_GPU_handle(configuration.target_gpu)
+    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
     print_GPU_info(gpu_handle)
     control_and_monitor(gpu_handle, configuration)
 
 # Search for a GPU and return a handle
-def get_GPU_handle(gpu_name):
+# This will not work if the user has more than 2 GPUs with the same name/model, use UUID for this case
+def get_GPU_handle_by_name(gpu_name):
     deviceCount = pynvml.nvmlDeviceGetCount()
 
     for i in range(deviceCount):
@@ -100,5 +102,50 @@ def control_and_monitor(gpu_handle, configuration):
 
         time.sleep(configuration.time_interval)
 
+def fan_policy_info_msg(fan_policy: int):
+
+    if pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW == fan_policy:
+        return 'Current fan control policy is automatic'
+
+    elif pynvml.NVML_FAN_POLICY_MANUAL == fan_policy:
+        return 'Current fan control policy is manual'
+
+    else:
+        return 'Unknown fan control policy'
+
+def set_fan_policy(gpu_handle, policy, dry_run):
+
+    # This is not really the number of fan, but the number of controllers
+    fan_count = pynvml.nvmlDeviceGetNumFans(gpu_handle)
+
+    for fan_idx in range(fan_count):
+
+        # Setting the fan control policy can be DANGEROUS! Use dry run for testing before actual changes
+        if dry_run != True:
+            fan_speed = pynvml.nvmlDeviceSetFanControlPolicy(gpu_handle, fan_idx, policy)
             
+def fan_policy(configuration):
+
+    current_policy = ctypes.c_uint(0)
+    target_fan_policy = configuration.fan_policy
+    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
+
+    # The library unfortunately still needs pointers
+    pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
+
+    print(fan_policy_info_msg(current_policy.value))
+
+    if target_fan_policy == 'automatic':
+        set_fan_policy(gpu_handle, 0, configuration.dry_run)
+
+    elif target_fan_policy == 'manual':
+        set_fan_policy(gpu_handle, 1, configuration.dry_run)
+
+    print('New fan control policy set sucessfully!')
+
+    # Get the new policy
+    pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
+    print(fan_policy_info_msg(current_policy.value))
+
+
 
