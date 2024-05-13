@@ -26,32 +26,82 @@ Because of multiple reasons:
 2. Can't use nvidia-settings under Wayland to control the fans
 3. GeForce Experience needs internet to work and it's pretty bad
 
-Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans throough NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on a display server.
+Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans through NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on a display server.
+
+![NVIDIA NVML change logs](img/NVIDIA_NVML_change_logs_515.jpeg)
+![NVIDIA NVML change logs](img/NVIDIA_NVML_change_logs_520.jpeg)
+
+## Installation
+
+Note: you may need to adapt the path of some of the commands
+
+1. Clone the repository
+```
+git clone https://github.com/HackTestes/NVML-GPU-Control NVML_GPU_Control
+```
+
+**The next part requires admin/root permissions**
+
+2. Create a new folder for the scripts
+```
+# Windows
+mkdir 'C:\Program Files\User_NVIDIA_GPU_Control\'
+
+# Linux
+mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
+```
+
+3. Copy the scripts files from the repository to the new directory
+```
+# Windows
+cp 'C:\Path_to_the_repository\NVML_GPU_Control\src' 'C:\Program Files\User_NVIDIA_GPU_Control\'
+
+# Linux
+cp '/Path_to_the_repository/NVML_GPU_Control/src' '/usr/bin/User_NVIDIA_GPU_Control\'
+```
+
+**Additional notes**: you may also need to install the library as admin or install it as a normal user and then lock the files(change the permissions and take ownership as root/admin).
+
+### Uninstall
+
+You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND)
+
+Useful docs (read before running the commands):
+* [Remove-Item](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-item?view=powershell-7.4)
+* [rm man page](https://man7.org/linux/man-pages/man1/rm.1.html)
+
+```
+# Windows - you can run first with the -WhatIf parameter to test 
+Remove-Item -Confirm -Force -Recurse -Path 'C:\Program Files\User_NVIDIA_GPU_Control\'
+
+# Linux
+rm --interactive --preserve-root -R '/usr/bin/User_NVIDIA_GPU_Control'
+```
 
 ## How to use
 
 - You must first list all cards that are connected, so you can get the name
 
 ```
- python.exe .\nvml_gpu_control.py list
+ python.exe .\src\nvml_gpu_control.py list
 ```
 
 - Then you can select a target by name
 ```
-python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
+python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
 ```
 
 - And the fan speed for each termperature level 
 ```
-sudo python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+sudo python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
 - You could also use the `--dry-run` for testing! 
 ```
-python.exe .\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
+python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
-Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staricase graph)
+Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staircase graph)
 
 ```
 Temp : speed(%)
@@ -77,7 +127,7 @@ ___________________________
 #### Usage docs
 
 ```
-python.exe .\nvml_gpu_control.py <ACTION> <OPTIONS>
+python.exe .\src\nvml_gpu_control.py <ACTION> <OPTIONS>
 
 ACTIONS
     help
@@ -119,42 +169,100 @@ OPTIONS
 
 ```
 
+### Setting up services or tasks (under development)
 
-### Setting up services (under development)
-
-This section will present some simple commands to setup services that start as admin and run the configured program. You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID in Linux).
+This section will present some simple commands to setup services or tasks that start as admin and run the configured program with the configured settings. You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID in Linux).
 
 #### Windows
 
-Please, check MS's documentation:
+Please, check Microsoft's documentation:
 
-- [Managing services](https://learn.microsoft.com/en-us/powershell/scripting/samples/managing-services?view=powershell-7.4)
-- [Set-Service](https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.4)
-- [New-Service](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-service?view=powershell-7.4)
+- [Task scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page)
+- [Task scheduler command line](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks)
 
-- [sc.exe config](https://learn.microsoft.com/pt-br/windows-server/administration/windows-commands/sc-config)
+Since this program does not implement the service API, it will be using scheduled tasks to run at startup. There will be presented a GUI and a command line guide to how to do the setup:
 
+##### GUI
+
+1. Make sure to have the script files at a path only accessible to admin users. This guide will be using `C:\Program Files\User_NVIDIA_GPU_Control\`
+
+2. Open Task Scheduler as an admin
+
+3. Click on `create task` (do not confuse it for the create **simple** task)
+
+![TaskScheduler_CreateTask](img/TaskScheduler_CreateTask.png)
+
+4. General tab -> Write the service name. This guide will use: `User NVIDIA GPU Control Task`
+
+5. General tab -> Write a description. This guide will use: `This task runs a daemon at startup responsible for controling NVIDIA GPUs' fans and power`
+
+6. General tab -> Mark the box containing `Run whether the user is logged or not`
+
+7. General tab -> Mark the box containing `Do not store password`
+
+8. General tab -> Mark the box containing `Run with highest privileges`
+
+![TaskScheduler_GeneralTab](img/TaskScheduler_GeneralTab.png)
+
+9. Triggers tab -> Create a new trigger and change the `Begin the task` to `At Startup` (make sure to leave the Enabled box marked)
+
+![TaskScheduler_TriggersTab](img/TaskScheduler_TriggersTab.png)
+![TaskScheduler_TriggersTab_2](img/TaskScheduler_TriggersTab_2.png)
+
+10. Actions tab -> Create a new action and select the `action` `Start a program` 
+
+11. Actions tab -> In the `Program/script` put the path of the python executable. This guide wil use `"C:\Program Files\Python312\python.exe"` (Note that some python versions may have a different directory name and make sure only admin users can change the executable and the folder) - the double quotes are necessary
+
+12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:0,20:47,30:50,35:100'`
+
+13. Actions tab -> In the `Start in (optional)`, add the script path directory. This guide will use the following args: `C:\Program Files\User_NVIDIA_GPU_Control`
+
+![TaskScheduler_ActionsTab](img/TaskScheduler_ActionsTab.png)
+
+14. Conditions tab -> Leave all boxes UNmarked
+
+![TaskScheduler_ConditionsTab](img/TaskScheduler_ConditionsTab.png)
+
+15. Settings tab -> Mark the box in `Allow task to be run on demand`
+
+16. Settings tab -> UNmark the box in `Stop task if it runs longer than`
+
+17. Settings tab -> UNmark the box in `Stop task if it runs longer than`
+
+18. Settings tab -> Mark the box in `If the running task does not end when requested, force it to stop`
+
+19. Settings tab -> In the `If the task is already running, then the following rule applies`, select the `Do not start a new instance`
+
+![TaskScheduler_SettingsTab](img/TaskScheduler_SettingsTab.png)
+
+
+##### Command line (Not recommended)
+
+Some users might find easier to simply run a command, however, it is important to warn about two things:
+
+1. The command line utility has less features than the GUI version;
+2. If you are unsure of what the command does, please check MS's documentation before running it (especially because you must run it with admin permissions)
+
+1. Open a terminal with admin permissions
+
+2. Write the following command: `schtasks /create /tn 'User NVIDIA GPU Control Task' /tr 'C:\Program Files\Python312\python.exe C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py fan-control -t "NVIDIA GeForce RTX 4080" -sp "10:0,20:47,30:50,35:100"' /sc ONSTART /np /rl HIGHEST`
+
+Another formatting
 
 ```
-$params = @{
-  Name = "GpuFanControl"
-  BinaryPathName = 'C:\Program Files\Python312\python.exe C:\System32\GpuFanControl\nvml_gpu_control.py -t "RTX 3080" -sp 10:20,20:35:30:50,35:100'
-  DisplayName = "GPU Fan Control"
-  StartupType = "Automatic"
-  Description = "A simple service to automatically setup NVIDIA GPU fan speed"
-  Credential = $(Get-Credential -UserName 'Admin user')
-}
-New-Service @params -WhatIf
-
-or 
-
-sc.exe config 'servicename-notdisplayname' obj='\Administrator'
-
+schtasks /create
+/tn 'User NVIDIA GPU Control Task'
+/tr 'C:\Program Files\Python312\python.exe C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py fan-control -t "NVIDIA GeForce RTX 4080" -sp "10:0,20:47,30:50,35:100"'
+/sc ONSTART
+/np
+/rl HIGHEST
 ```
 
-#### Linux (systemd / cronjob)
+On of the limitations involve not being able to change the start working directory, so some paths in the scripts might break. Overall, I do not recommend this approach on Windows, users should opt for the GUI method.
 
-##### Systemd setup
+#### Linux (systemd / cronjob) - **Not ready**
+
+##### Systemd timer
 
 1. Create a service file
 ```
@@ -172,3 +280,50 @@ KillSignal=SIGQUIT
 [Install]
 WantedBy=multi-user.target
 ```
+
+## Security considerations
+
+### Windows
+
+1. Having an admin prompt under the same desktop
+
+      An opened prompt under the same desktop can receive key command from non-privileged programs, allowing any program to escalate to admin. To mitigate this it is necessary to restrict all onther programs with a UI limit JobObject, create the window under a new desktop or not create any windows on the desktop (this is how it is done under the guide).
+
+2. Programs that start automatically as admin must be secured against writes
+
+      The scripts and the executables can only be written by admin users, otherwise, another program may overwrite them and gain admin rights on the machine. Please, verify the permissions set on the python executable and on the scripts (this also applies to the library nvidia-ml-py).
+
+
+### Linux
+
+1. Having an admin prompt under the same desktop (X11)
+
+      This is a similar risk to the Windows counterpart, especially on X11/Xorg. So, if you use X11, you must create a new session under a new TTY to create an admin window; but if you use Wayland, it already isolates windows by default.
+
+2. Programs that start automatically as admin must be secured against writes
+
+      Same as Windows. All of the executables and scripts must be accessible only to the root user (UID 0).
+
+## Roadmap (features to be added)
+
+### Must have
+
+- [x] Fan control
+
+- [x] Select GPU by name
+
+- [ ] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
+
+- [ ] Start at startup with necessary permissions (Windows and Linux)
+
+- [ ] Power limit control
+
+- [ ] Temperature threshold control
+
+### Can consider (nice to have)
+
+- [ ] Logging to file option (with message quantity limit)
+
+- [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unecessary as users can generate all speed points elsewhere and just pass it as arguments
+
+- [x] Control fan policy
