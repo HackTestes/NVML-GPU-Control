@@ -36,7 +36,7 @@ def main():
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:
-        print('Calling nvml shutdown and teminating the program')
+        print('Calling nvml shutdown and terminating the program')
         nvmlShutdown()
 
 if __name__ == '__main__':
