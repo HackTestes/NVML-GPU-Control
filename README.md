@@ -2,7 +2,10 @@
 
 This is a small program that uses the NVIDIA Management Library (NVML) to monitor GPU temperature and set fan speed. NVML is being used, because it is OS and display sever agnostic (that means it doesn't depend on X11 or Windows). Another important reason is that the official NVIDIA tool (NVIDIA smi) does not currently support fan control.
 
-Note: this project is NOT endorsed by NVIDIA
+## Disclaimer
+
+* This project is NOT endorsed of sponsored by NVIDIA
+* This project is independent
 
 ## Supported hardware
 
@@ -14,7 +17,7 @@ To use it, you must have installed:
 
 - NVIDIA's proprietary drivers (>= v520)
 - Python 3
-- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/)
+- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/)(current version used: 12.535.133)
 
 You will also need **admin/root** privileges to be able to **set the fan speed**. 
 
@@ -64,7 +67,7 @@ cp '/Path_to_the_repository/NVML_GPU_Control/src' '/usr/bin/User_NVIDIA_GPU_Cont
 
 ### Uninstall
 
-You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND)
+You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND). You can also use the GUI to simply dlete the directory if you find that easier and safer.
 
 Useful docs (read before running the commands):
 * [Remove-Item](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-item?view=powershell-7.4)
@@ -236,7 +239,7 @@ Since this program does not implement the service API, it will be using schedule
 ![TaskScheduler_SettingsTab](img/TaskScheduler_SettingsTab.png)
 
 
-##### Command line (Not recommended)
+##### Command line (Not recommended and untested)
 
 Some users might find easier to simply run a command, however, it is important to warn about two things:
 
