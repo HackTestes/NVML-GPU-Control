@@ -352,7 +352,7 @@ WantedBy=multi-user.target
 
 - [x] Control fan policy
 
-- [ ] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
+- [x] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
 
 - [ ] Run at startup with necessary permissions (Windows and Linux) - Windows already works
 

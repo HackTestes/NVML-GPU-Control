@@ -49,12 +49,22 @@ def print_GPU_info(gpu_handle):
     log_helper(f"Fan controller count {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
 
 def fan_control(configuration):
-    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
     print_GPU_info(gpu_handle)
     control_and_monitor(gpu_handle, configuration)
 
 # Search for a GPU and return a handle
-# This will not work if the user has more than 2 GPUs with the same name/model, use UUID for this case
+
+def get_GPU_handle(gpu_name, gpu_uuid):
+    
+    if gpu_uuid != '':
+        return pynvml.nvmlDeviceGetHandleByUUID(gpu_uuid)
+
+    else:
+        return get_GPU_handle_by_name(gpu_name)
+
+
+# This will NOT work if the user has more than 2 GPUs with the same name/model, use UUID for this case
 def get_GPU_handle_by_name(gpu_name):
     deviceCount = pynvml.nvmlDeviceGetCount()
 
@@ -172,7 +182,7 @@ def fan_policy(configuration):
 
     current_policy = ctypes.c_uint(0)
     target_fan_policy = configuration.fan_policy
-    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
     # The library unfortunately still needs pointers
     pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
@@ -219,7 +229,7 @@ def get_power_limit_constraints_watts(gpu_handle):
 
 
 def print_power_limit_info(configuration):
-    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
     constraints = get_power_limit_constraints_watts(gpu_handle)
     current_pl = get_current_power_limit_watts(gpu_handle)
@@ -281,7 +291,7 @@ def set_temperature_thresholds(gpu_handle, threshold_type, temperature_C, dry_ru
 
 def print_thresholds_info(configuration):
 
-    gpu_handle = get_GPU_handle_by_name(configuration.target_gpu)
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
     temperarure_thresholds = get_temperarure_thresholds(gpu_handle)
 

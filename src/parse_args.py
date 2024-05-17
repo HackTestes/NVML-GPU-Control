@@ -22,8 +22,8 @@ class Configuration:
     def __init__(self):
         # This only supports one target gpu, use a process for each GPU (erros become isolated to each other) 
         self.target_gpu = ""
-        self.name = ""
-        self.uuid = ""
+        self.gpu_name = ""
+        self.gpu_uuid = ""
         self.action = ""
         self.temp_speed_pair = []
         self.curve_type = "fixed" # Currently for internal usage only (I want to later add calculation for lines and curves fuctions)
@@ -31,6 +31,9 @@ class Configuration:
         self.time_interval = 1.0 # In seconds
         self.dry_run = False
         self.fan_policy = ''
+        self.single_use = False
+        self.acoustic_temp_limit = 0 # The user must set the value
+        self.power_limit = 0 # The user must set the value
 
 class TempSpeedPair:
 
@@ -58,7 +61,12 @@ class TempSpeedPair:
 # Some sane checks (in case the user makes a bad config by accident)
 def validate_config(config):
 
-    if config.target_gpu == '':
+#    if config.target_gpu == '':
+#        print("You did not select a target GPU")
+#        raise InvalidConfig("No GPU was selected")
+
+    # At least one of the target setting must be configured
+    if config.gpu_name == '' and config.gpu_uuid == '':
         print("You did not select a target GPU")
         raise InvalidConfig("No GPU was selected")
 
@@ -72,6 +80,18 @@ def validate_config(config):
         if config.fan_policy == '':
             print("You did not select a fan policy: autmatic or manual")
             raise InvalidConfig("No fan policy was selected")
+
+    # power-control needs a power limit configuration
+    if config.action == 'power-control':
+        if config.power_limit == 0:
+            print("You did not select a power limit")
+            raise InvalidConfig("No power limit was selected")
+
+    # temp-control needs a power limit configuration
+    if config.action == 'temp-control':
+        if config.acoustic_temp_limit == 0:
+            print("You did not select a temperature limit")
+            raise InvalidConfig("No temperature limit was selected")
 
 
 def parse_cmd_args(args):
@@ -107,6 +127,12 @@ def parse_cmd_args(args):
     elif (action == 'get-thresholds-info'):
         configuration.action = 'get-thresholds-info'
 
+    elif (action == 'power-control'):
+        configuration.action = 'power-control'
+
+    elif (action == 'temp-control'):
+        configuration.action = 'temp-control'
+
     else:
         print(f'Invalid action: {action}')
         raise InvalidAction("The action passed as argument is incorrect")
@@ -118,8 +144,16 @@ def parse_cmd_args(args):
 
         arg = args[i]
 
-        if (arg == '--target' or arg == '-t'):
-            configuration.target_gpu = args[i+1]
+#        if (arg == '--target' or arg == '-t'):
+#            configuration.target_gpu = args[i+1]
+#            i += 1 # Skip the next iteration
+
+        if (arg == '--name' or arg == '-n'):
+            configuration.gpu_name = args[i+1]
+            i += 1 # Skip the next iteration
+
+        elif (arg == '--uuid' or arg == '-id'):
+            configuration.gpu_uuid = args[i+1]
             i += 1 # Skip the next iteration
 
         elif (arg == '--speed-pair' or arg == '-sp'):
@@ -167,6 +201,17 @@ def parse_cmd_args(args):
 
         elif (arg == '--manual'):
             configuration.fan_policy = 'manual'
+
+        elif (arg == '--single-use' or arg == '-su'):
+            configuration.single_use = True
+
+        elif (arg == '--acoustic-temp-limit' or arg == '-tl'):
+            configuration.acoustic_temp_limit = int(args[i+1])
+            i += 1 # Skip the next iteration
+
+        elif (arg == '--power-limit' or arg == '-pl'):
+            configuration.power_limit = int(args[i+1])
+            i += 1 # Skip the next iteration
 
         else:
             print(f'Invalid option: {arg}')
