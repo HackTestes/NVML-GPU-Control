@@ -22,63 +22,101 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'list')
 
     def test_parse_args_fan_control(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--target', 'RTX 4080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'fan-control')
 
     def test_parse_args_fan_policy(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--auto'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--auto'])
         self.assertEqual( config.action, 'fan-policy')
+
+    def test_parse_args_get_power_limit_info(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'get-power-limit-info', '--name', 'RTX 4080'])
+        self.assertEqual( config.action, 'get-power-limit-info')
+
+    def test_parse_args_get_temp_thresholds_limit_info(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'get-thresholds-info', '--name', 'RTX 4080'])
+        self.assertEqual( config.action, 'get-thresholds-info')
 
     def test_parse_args_invalid_action(self):
         with self.assertRaises(parse_args.InvalidAction):
             parse_args.parse_cmd_args(['.python_script', 'invalid-action'])
 
     def test_parse_args_action_ignore_rest(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'help', '--target', 'RTX 4080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'help', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'help')
         self.assertEqual( config.target_gpu, '')
 
-        config = parse_args.parse_cmd_args(['.python_script', 'list', '--target', 'RTX 4080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'list', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'list')
         self.assertEqual( config.target_gpu, '')
 
-    def test_parse_args_option_target(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--target', 'RTX 4080'])
+    def test_parse_args_option_gpu_name(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'fan-control')
-        self.assertEqual( config.target_gpu, 'RTX 4080')
+        self.assertEqual( config.gpu_name, 'RTX 4080')
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
-        self.assertEqual( config.target_gpu, 'RTX 3080')
+        self.assertEqual( config.gpu_name, 'RTX 3080')
+
+    def test_parse_args_option_gpu_uuid(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--uuid', 'GPU-00000000-0000-0000-0000-000000000000'])
+        self.assertEqual( config.action, 'fan-control')
+        self.assertEqual( config.gpu_uuid, 'GPU-00000000-0000-0000-0000-000000000000')
+
+    def test_parse_args_option_power_limit(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '--power-limit', '100'])
+        self.assertEqual( config.power_limit, 100)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '-pl', '100'])
+        self.assertEqual( config.power_limit, 100)
+
+    def test_parse_args_option_acoustic_temp_limit(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'temp-control', '--name', 'RTX 4080', '--acoustic-temp-limit', '50'])
+        self.assertEqual( config.acoustic_temp_limit, 50)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'temp-control', '--name', 'RTX 4080', '-tl', '50'])
+        self.assertEqual( config.acoustic_temp_limit, 50)
+
+    def test_parse_args_option_single_use(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '-pl', '50', '--single-use'])
+        self.assertEqual( config.single_use, True)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '-pl', '50', '-su'])
+        self.assertEqual( config.single_use, True)
+
+        # Default should be False
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '-pl', '50'])
+        self.assertEqual( config.single_use, False)
 
     def test_parse_args_option_default_speed(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--default-speed', '36', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--default-speed', '36', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.default_speed, 36)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ds', '27', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ds', '27', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.default_speed, 27)
     
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertTrue( config.default_speed >= 30) # Fan speed must never default for a value lower than 30%, except for when user explicitly wants to
 
     def test_parse_args_option_time_interval(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--time-interval', '5', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--time-interval', '5', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.time_interval, 5.0)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ti', '0.5', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ti', '0.5', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.time_interval, 0.5)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertTrue( config.time_interval <= 1) # Default should never be higher than 1s, unless the user states so
 
     def test_parse_args_temp_speed_pair(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '0:0,10:30,20:50,35:75,40:100', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '0:0,10:30,20:50,35:75,40:100', '-n', 'RTX 3080'])
 
         expected_output = [
             parse_args.TempSpeedPair(40, 100),
@@ -89,11 +127,11 @@ class TestMethods(unittest.TestCase):
         ]
         self.assertEqual(expected_output, config.temp_speed_pair)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-sp', '0:0,10:30,20:50,35:75,40:100', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-sp', '0:0,10:30,20:50,35:75,40:100', '-n', 'RTX 3080'])
         self.assertEqual(expected_output, config.temp_speed_pair)
 
     def test_parse_args_temp_speed_pair_sort(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '40:100,20:50,10:30,35:75', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '40:100,20:50,10:30,35:75', '-n', 'RTX 3080'])
 
         expected_output = [
             parse_args.TempSpeedPair(40, 100),
@@ -131,35 +169,35 @@ class TestMethods(unittest.TestCase):
             parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '10:-100'])
 
     def test_parse_args_dry_run(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--dry-run', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--dry-run', '-n', 'RTX 3080'])
         self.assertEqual(config.dry_run, True)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-dr', '-t', 'RTX 3080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-dr', '-n', 'RTX 3080'])
         self.assertEqual(config.dry_run, True)
 
-        # Defaulf value should always be False
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-t', 'RTX 3080'])
+        # Default value should always be False
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual(config.dry_run, False)
 
     def test_parse_args_fan_policy_auto(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--auto'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--auto'])
         self.assertEqual( config.fan_policy, 'automatic')
 
     def test_parse_args_fan_policy_manual(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--target', 'RTX 4080', '--manual'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--manual'])
         self.assertEqual( config.fan_policy, 'manual')
 
     def test_parse_args_invalid_option(self):
 
         with self.assertRaises(parse_args.InvalidOption):
-            parse_args.parse_cmd_args(['.python_script', 'fan-control', '--invalid-option', '10:120', '-t', 'RTX 3080'])
+            parse_args.parse_cmd_args(['.python_script', 'fan-control', '--invalid-option', '10:120', '-n', 'RTX 3080'])
 
     def test_parse_args_real_cmd(self):
 
-        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--target', 'RTX 4080', '--speed-pair', '0:0,20:35,30:50,40:100', '--time-interval', '0.5'])
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--name', 'RTX 4080', '--speed-pair', '0:0,20:35,30:50,40:100', '--time-interval', '0.5'])
 
         self.assertEqual(config.action, 'fan-control')
-        self.assertEqual(config.target_gpu, 'RTX 4080')
+        self.assertEqual(config.gpu_name, 'RTX 4080')
         self.assertEqual(config.time_interval, 0.5)
         expected_output = [
             parse_args.TempSpeedPair(40, 100),
@@ -169,15 +207,38 @@ class TestMethods(unittest.TestCase):
         ]
         self.assertEqual(config.temp_speed_pair, expected_output)
 
-    def test_parse_args_sane_checks(self):
+    def test_parse_args_sane_checks_no_fan_policy(self):
+
+        # No fan policy
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'fan-policy', '-n', 'RTX 3080'])
+
+    def test_parse_args_sane_checks_no_gpu(self):
 
         # No target gpu
         with self.assertRaises(parse_args.InvalidConfig):
             parse_args.parse_cmd_args(['.python_script', 'fan-control'])
 
+        # No target gpu
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'power-control'])
+
+        # No target gpu
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'temp-control'])
+
+    def test_parse_args_sane_checks_no_power_limit(self):
+
         # No fan policy
         with self.assertRaises(parse_args.InvalidConfig):
-            parse_args.parse_cmd_args(['.python_script', 'fan-policy', '-t', 'RTX 3080'])
+            parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080'])
+
+    def test_parse_args_sane_checks_no_temp_acoustic_limit(self):
+
+        # No fan policy
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'temp-control', '--name', 'RTX 4080'])
+
 
     def test_check_driver_version(self):
 

@@ -249,7 +249,7 @@ Since this program does not implement the service API, it will be using schedule
 
 11. Actions tab -> In the `Program/script` put the path of the python executable. This guide wil use `"C:\Program Files\Python312\python.exe"` (Note that some python versions may have a different directory name and make sure only admin users can change the executable and the folder) - the double quotes are necessary
 
-12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "fan-control" "-t" "NVIDIA GeForce RTX 4080" "-sp" "10:0,20:47,30:50,35:100"`
+12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "fan-control" "-t" "NVIDIA GeForce RTX 4080" "-sp" "10:0,20:50,35:100"`
 
 13. Actions tab -> In the `Start in (optional)`, add the script path directory. This guide will use the following args: `C:\Program Files\User_NVIDIA_GPU_Control`
 
