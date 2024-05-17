@@ -22,6 +22,8 @@ class Configuration:
     def __init__(self):
         # This only supports one target gpu, use a process for each GPU (erros become isolated to each other) 
         self.target_gpu = ""
+        self.name = ""
+        self.uuid = ""
         self.action = ""
         self.temp_speed_pair = []
         self.curve_type = "fixed" # Currently for internal usage only (I want to later add calculation for lines and curves fuctions)
@@ -77,7 +79,7 @@ def parse_cmd_args(args):
     configuration = Configuration()
 
     if len(args) == 1:
-        print(f'You must pass more argument')
+        print(f'You must pass more arguments')
         raise InsufficientArgs("No action was supplied")
 
     # You can always ignore the first argument, since it is the program itself
@@ -98,6 +100,12 @@ def parse_cmd_args(args):
 
     elif (action == 'fan-policy'):
         configuration.action = 'fan-policy'
+
+    elif (action == 'get-power-limit-info'):
+        configuration.action = 'get-power-limit-info'
+
+    elif (action == 'get-thresholds-info'):
+        configuration.action = 'get-thresholds-info'
 
     else:
         print(f'Invalid action: {action}')

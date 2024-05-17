@@ -17,7 +17,7 @@ To use it, you must have installed:
 
 - NVIDIA's proprietary drivers (>= v520)
 - Python 3
-- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/)(current version used: 12.535.133)
+- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.535.133)
 
 You will also need **admin/root** privileges to be able to **set the fan speed**. 
 
@@ -86,7 +86,7 @@ rm --interactive --preserve-root -R '/usr/bin/User_NVIDIA_GPU_Control'
 - You must first list all cards that are connected, so you can get the name
 
 ```
- python.exe .\src\nvml_gpu_control.py list
+python.exe .\src\nvml_gpu_control.py list
 ```
 
 - Then you can select a target by name
@@ -144,12 +144,30 @@ ACTIONS
 
     fan-policy <--auto|--manual>
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
+    
+    get-power-limit-info
+          Shows...
+
+    power-control
+          Controls...
+
+    get-thresholds-info
+          Shows...
+
+    temp-control
+          Controls...
+
+    control-all
+         Allows the use of all controls in a single command/loop
 
 
 OPTIONS
 
-    --target OR -t <GPU_NAME>
-          Select a target GPU by its name
+    --name OR -n <GPU_NAME>
+          Select a target GPU by its name. Note: UUID has preference over name
+
+    --uuid OR -id <GPU_UUID>
+          Select a target GPU by its Universally Unique IDentifier (UUID). Note: UUID has preference over name
 
     --time-interval OR -ti <TIME_SECONDS>
           Time period to wait before probing the GPU again
@@ -169,8 +187,23 @@ OPTIONS
     --auto
           Sets the fan policy to automatic (vBIOS contolled)
 
+    --power-limit OR -pl <POWER_LIMIT_WATTS>
+          Sets the power limit of the GPU in watts
+
+    --acoustic-temp-limit OR -tl <TEMPERATURE_CELSIUS>
+          Sets the acoustic threshold in celsious (note that this is the same temperature limit used by GeForce Experice)
+
+    --single-use OR -su
+          Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
 
 ```
+
+##### Running tests
+
+```
+python.exe .\src\tests.py -b
+```
+
 
 ### Setting up services or tasks (under development)
 
@@ -189,7 +222,7 @@ Since this program does not implement the service API, it will be using schedule
 
 1. Make sure to have the script files at a path only accessible to admin users. This guide will be using `C:\Program Files\User_NVIDIA_GPU_Control\`
 
-2. Open Task Scheduler as an admin
+2. Open Task Scheduler as an admin (you might need to select a admin user)
 
 3. Click on `create task` (do not confuse it for the create **simple** task)
 
@@ -315,18 +348,22 @@ WantedBy=multi-user.target
 
 - [x] Select GPU by name
 
+- [x] Display fan speed per controller
+
+- [x] Control fan policy
+
 - [ ] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
 
-- [ ] Start at startup with necessary permissions (Windows and Linux)
+- [ ] Run at startup with necessary permissions (Windows and Linux) - Windows already works
 
 - [ ] Power limit control
 
 - [ ] Temperature threshold control
 
+- [x] Help action must not require NVML initialization
+
 ### Can consider (nice to have)
 
-- [ ] Logging to file option (with message quantity limit)
+- [ ] Logging to file option (with message size limit) -> user can spawn another instance with the same arguments and pass the `--dry-run` option as it should mirror the output of the privileged one
 
 - [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unecessary as users can generate all speed points elsewhere and just pass it as arguments
-
-- [x] Control fan policy

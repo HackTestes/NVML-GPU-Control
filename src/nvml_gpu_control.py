@@ -8,6 +8,10 @@ def main():
     # Getting a configuration obj
     config = parse_args.parse_cmd_args(sys.argv)
 
+    if config.action == 'help':
+        main_funcs.print_help()
+        return
+
     try:
         # Starting nvml
         nvmlInit()
@@ -21,18 +25,30 @@ def main():
 
         match config.action:
 
-            # Help doesn't require nvml (TODO change code paths)
-            case 'help':
-                main_funcs.print_help()
-
+            # Information query
             case 'list':
                 main_funcs.list_gpus()
 
+            case 'get-power-limit-info':
+                main_funcs.print_power_limit_info(config)
+
+            case 'get-thresholds-info':
+                main_funcs.print_thresholds_info(config)
+
+            # Fan control
             case 'fan-control':
                 main_funcs.fan_control(config)
 
             case 'fan-policy':
                 main_funcs.fan_policy(config)
+
+            # Power control
+            case 'power-control':
+                main_funcs.power_control(config)
+
+            # Temperature threshold control
+            case 'temp-control':
+                main_funcs.temp_control(config)
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:
