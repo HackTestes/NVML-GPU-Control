@@ -83,25 +83,31 @@ rm --interactive --preserve-root -R '/usr/bin/User_NVIDIA_GPU_Control'
 
 ## How to use
 
-- You must first list all cards that are connected, so you can get the name
+- Make sure to run with the working directory being the `.\src`
 
 ```
-python.exe .\src\nvml_gpu_control.py list
+cd ./src
+```
+
+- You must first list all cards that are connected, so you can get the name or UUID
+
+```
+python.exe ./nvml_gpu_control.py list
 ```
 
 - Then you can select a target by name
 ```
-python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080'
+python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
 ```
 
 - And the fan speed for each termperature level 
 ```
-sudo python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+sudo python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
 - You could also use the `--dry-run` for testing! 
 ```
-python.exe .\src\nvml_gpu_control.py fan-control -t 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
+python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staircase graph)
@@ -130,7 +136,7 @@ ___________________________
 #### Usage docs
 
 ```
-python.exe .\src\nvml_gpu_control.py <ACTION> <OPTIONS>
+python.exe .\nvml_gpu_control.py <ACTION> <OPTIONS>
 
 ACTIONS
     help
@@ -146,16 +152,16 @@ ACTIONS
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
     
     get-power-limit-info
-          Shows...
+          Shows information about the power limit of the selected GPU
 
     power-control
-          Controls...
+          Controls the power limit of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
 
     get-thresholds-info
-          Shows...
+          Shows information about temperature thresholds in dregrees Celsius of the selected GPU.
 
     temp-control
-          Controls...
+          Controls the temperature thresholds configuration of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
 
     control-all
          Allows the use of all controls in a single command/loop
@@ -170,7 +176,7 @@ OPTIONS
           Select a target GPU by its Universally Unique IDentifier (UUID). Note: UUID has preference over name
 
     --time-interval OR -ti <TIME_SECONDS>
-          Time period to wait before probing the GPU again
+          Time period to wait before probing the GPU again. Works for all actions that run in a loop
 
     --dry-run OR -dr
           Run the program, but don't change/set anything. Useful for testing the behavior of the program
@@ -201,7 +207,7 @@ OPTIONS
 ##### Running tests
 
 ```
-python.exe .\src\tests.py -b
+python.exe ./src/tests.py -b
 ```
 
 
@@ -249,7 +255,7 @@ Since this program does not implement the service API, it will be using schedule
 
 11. Actions tab -> In the `Program/script` put the path of the python executable. This guide wil use `"C:\Program Files\Python312\python.exe"` (Note that some python versions may have a different directory name and make sure only admin users can change the executable and the folder) - the double quotes are necessary
 
-12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "fan-control" "-t" "NVIDIA GeForce RTX 4080" "-sp" "10:0,20:50,35:100"`
+12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "fan-control" "-n" "NVIDIA GeForce RTX 4080" "-sp" "10:0,20:50,35:100"`
 
 13. Actions tab -> In the `Start in (optional)`, add the script path directory. This guide will use the following args: `C:\Program Files\User_NVIDIA_GPU_Control`
 
@@ -288,7 +294,7 @@ Another formatting
 ```
 schtasks /create
 /tn 'User NVIDIA GPU Control Task'
-/tr 'C:\Program Files\Python312\python.exe C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py fan-control -t "NVIDIA GeForce RTX 4080" -sp "10:0,20:47,30:50,35:100"'
+/tr 'C:\Program Files\Python312\python.exe C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py fan-control -n "NVIDIA GeForce RTX 4080" -sp "10:0,20:47,30:50,35:100"'
 /sc ONSTART
 /np
 /rl HIGHEST
@@ -356,9 +362,11 @@ WantedBy=multi-user.target
 
 - [ ] Run at startup with necessary permissions (Windows and Linux) - Windows already works
 
-- [ ] Power limit control
+- [x] Power limit control
 
-- [ ] Temperature threshold control
+- [x] Temperature threshold control
+
+- [ ] Enable all controls
 
 - [x] Help action must not require NVML initialization
 
