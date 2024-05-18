@@ -133,6 +133,9 @@ def parse_cmd_args(args):
     elif (action == 'temp-control'):
         configuration.action = 'temp-control'
 
+    elif (action == 'control-all'):
+        configuration.action = 'control-all'
+
     else:
         print(f'Invalid action: {action}')
         raise InvalidAction("The action passed as argument is incorrect")

@@ -49,6 +49,10 @@ def main():
             # Temperature threshold control
             case 'temp-control':
                 main_funcs.temp_control(config)
+
+            # Enable everything
+            case 'control-all':
+                main_funcs.control_all(config)
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:

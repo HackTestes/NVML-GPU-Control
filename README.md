@@ -366,7 +366,7 @@ WantedBy=multi-user.target
 
 - [x] Temperature threshold control
 
-- [ ] Enable all controls
+- [x] Enable all controls
 
 - [x] Help action must not require NVML initialization
 

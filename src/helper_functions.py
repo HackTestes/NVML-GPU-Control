@@ -430,3 +430,21 @@ def temp_control(configuration):
             break
 
         time.sleep(configuration.time_interval)
+
+
+def control_all(configuration):
+    
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
+    print_GPU_info(gpu_handle)
+
+    while(True):
+
+        if configuration.power_limit != 0:
+            power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run)
+
+        if configuration.acoustic_temp_limit != 0:
+            temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run)
+
+        fan_control_subroutine(gpu_handle, configuration)
+
+        time.sleep(configuration.time_interval)
