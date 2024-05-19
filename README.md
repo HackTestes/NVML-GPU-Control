@@ -100,7 +100,7 @@ python.exe ./nvml_gpu_control.py list
 python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
 ```
 
-- And the fan speed for each termperature level 
+- And the fan speed for each temperature level 
 ```
 sudo python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
@@ -275,11 +275,9 @@ or
 
 16. Settings tab -> UNmark the box in `Stop task if it runs longer than`
 
-17. Settings tab -> UNmark the box in `Stop task if it runs longer than`
+17. Settings tab -> Mark the box in `If the running task does not end when requested, force it to stop`
 
-18. Settings tab -> Mark the box in `If the running task does not end when requested, force it to stop`
-
-19. Settings tab -> In the `If the task is already running, then the following rule applies`, select the `Do not start a new instance`
+18. Settings tab -> In the `If the task is already running, then the following rule applies`, select the `Do not start a new instance`
 
 ![TaskScheduler_SettingsTab](img/TaskScheduler_SettingsTab.png)
 
