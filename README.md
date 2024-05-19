@@ -67,7 +67,7 @@ cp '/Path_to_the_repository/NVML_GPU_Control/src/*' '/usr/bin/User_NVIDIA_GPU_Co
 
 ### Uninstall
 
-You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND). You can also use the GUI to simply dlete the directory if you find that easier and safer.
+You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND). You can also use the GUI to simply delete the directory if you find that easier and safer.
 
 Useful docs (read before running the commands):
 * [Remove-Item](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-item?view=powershell-7.4)
