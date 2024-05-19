@@ -57,10 +57,10 @@ mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
 3. Copy the scripts files from the repository to the new directory
 ```
 # Windows
-cp 'C:\Path_to_the_repository\NVML_GPU_Control\src' 'C:\Program Files\User_NVIDIA_GPU_Control\'
+cp 'C:\Path_to_the_repository\NVML_GPU_Control\src\*' 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
 # Linux
-cp '/Path_to_the_repository/NVML_GPU_Control/src' '/usr/bin/User_NVIDIA_GPU_Control\'
+cp '/Path_to_the_repository/NVML_GPU_Control/src/*' '/usr/bin/User_NVIDIA_GPU_Control\'
 ```
 
 **Additional notes**: you may also need to install the library as admin or install it as a normal user and then lock the files(change the permissions and take ownership as root/admin).
@@ -151,13 +151,13 @@ ACTIONS
     fan-policy <--auto|--manual>
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
     
-    get-power-limit-info
+    power-limit-info
           Shows information about the power limit of the selected GPU
 
     power-control
           Controls the power limit of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
 
-    get-thresholds-info
+    thresholds-info
           Shows information about temperature thresholds in dregrees Celsius of the selected GPU.
 
     temp-control
@@ -256,6 +256,12 @@ Since this program does not implement the service API, it will be using schedule
 11. Actions tab -> In the `Program/script` put the path of the python executable. This guide wil use `"C:\Program Files\Python312\python.exe"` (Note that some python versions may have a different directory name and make sure only admin users can change the executable and the folder) - the double quotes are necessary
 
 12. Actions tab -> In the `Add arguments (optional)`, add the script path and the desired settings. This guide will use the following args: `"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "fan-control" "-n" "NVIDIA GeForce RTX 4080" "-sp" "10:0,20:50,35:100"`
+
+or
+
+```
+"C:\Program Files\User_NVIDIA_GPU_Control\nvml_gpu_control.py" "control-all" "-n" "NVIDIA GeForce RTX 4080" "-pl" "305" "-tl" "65" "-sp" "10:0,20:50,35:100"
+```
 
 13. Actions tab -> In the `Start in (optional)`, add the script path directory. This guide will use the following args: `C:\Program Files\User_NVIDIA_GPU_Control`
 

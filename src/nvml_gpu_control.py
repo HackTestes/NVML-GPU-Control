@@ -39,6 +39,10 @@ def main():
             case 'fan-control':
                 main_funcs.fan_control(config)
 
+            # Fan control
+            case 'fan-info':
+                main_funcs.print_fan_info(config)
+
             case 'fan-policy':
                 main_funcs.fan_policy(config)
 

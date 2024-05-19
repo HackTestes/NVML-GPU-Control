@@ -30,12 +30,24 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'fan-policy')
 
     def test_parse_args_get_power_limit_info(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'get-power-limit-info', '--name', 'RTX 4080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'power-limit-info', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'get-power-limit-info')
 
     def test_parse_args_get_temp_thresholds_limit_info(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'get-thresholds-info', '--name', 'RTX 4080'])
+        config = parse_args.parse_cmd_args(['.python_script', 'thresholds-info', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'get-thresholds-info')
+
+    def test_parse_args_action_power_control(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'power-control', '--name', 'RTX 4080', '-pl', '150'])
+        self.assertEqual( config.action, 'power-control')
+
+    def test_parse_args_action_temp_control(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'temp-control', '--name', 'RTX 4080', '-tl', '150'])
+        self.assertEqual( config.action, 'temp-control')
+
+    def test_parse_args_action_control_all(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'control-all', '--name', 'RTX 4080'])
+        self.assertEqual( config.action, 'control-all')
 
     def test_parse_args_invalid_action(self):
         with self.assertRaises(parse_args.InvalidAction):
@@ -226,6 +238,14 @@ class TestMethods(unittest.TestCase):
         # No target gpu
         with self.assertRaises(parse_args.InvalidConfig):
             parse_args.parse_cmd_args(['.python_script', 'temp-control'])
+
+        # No target gpu
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'power-limit-info'])
+
+        # No target gpu
+        with self.assertRaises(parse_args.InvalidConfig):
+            parse_args.parse_cmd_args(['.python_script', 'thresholds-info'])
 
     def test_parse_args_sane_checks_no_power_limit(self):
 

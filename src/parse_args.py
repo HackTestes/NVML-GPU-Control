@@ -118,13 +118,16 @@ def parse_cmd_args(args):
     elif (action == 'fan-control'):
         configuration.action = 'fan-control'
 
+    elif (action == 'fan-info'):
+        configuration.action = 'fan-info'
+
     elif (action == 'fan-policy'):
         configuration.action = 'fan-policy'
 
-    elif (action == 'get-power-limit-info'):
+    elif (action == 'power-limit-info'):
         configuration.action = 'get-power-limit-info'
 
-    elif (action == 'get-thresholds-info'):
+    elif (action == 'thresholds-info'):
         configuration.action = 'get-thresholds-info'
 
     elif (action == 'power-control'):

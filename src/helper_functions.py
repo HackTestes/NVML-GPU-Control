@@ -24,6 +24,11 @@ class PowerLimitConstraintsWatts:
         self.min = min_pl
         self.max = max_pl
 
+class FanSpeedConstraintsPercentage:
+    def __init__(self, min_s, max_s):
+        self.min = min_s
+        self.max = max_s
+
 def check_driver_version(driver_version_str):
     major = int(driver_version_str.split('.')[0])
 
@@ -35,7 +40,6 @@ def log_helper(msg):
 
 def print_help():
     help_text = '''
-
 python.exe .\\nvml_gpu_control.py <ACTION> <OPTIONS>
 
 ACTIONS
@@ -51,13 +55,13 @@ ACTIONS
     fan-policy <--auto|--manual>
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
     
-    get-power-limit-info
+    power-limit-info
           Shows information about the power limit of the selected GPU
 
     power-control
           Controls the power limit of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
 
-    get-thresholds-info
+    thresholds-info
           Shows information about temperature thresholds in dregrees Celsius of the selected GPU.
 
     temp-control
@@ -179,7 +183,24 @@ def get_gpu_fan_speed_constraints(gpu_handle):
     # Some drivers turn off the fan motor at speeds as high as 47%
     pynvml.nvmlDeviceGetMinMaxFanSpeed(gpu_handle, ctypes.byref(fan_min), ctypes.byref(fan_max))
 
-    return [fan_min, fan_max]
+    return FanSpeedConstraintsPercentage(fan_min.value, fan_max.value)
+
+def print_fan_info(configuration):
+
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
+
+    current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
+    current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
+    fan_constraints = get_gpu_fan_speed_constraints(gpu_handle)
+
+    print(f'Current temp: {current_temp}°C')
+    print(f'Current speed: {current_speed}%') # Minitor for fan fan speed changes and reajust! 
+
+    # Get the fan speed per controller
+    for idx, fan_speed_c in enumerate(get_gpu_fan_speed_per_controller(gpu_handle)):
+        print(f'Fan controller speed {idx}: {fan_speed_c}%')
+
+    print(f'Fan constraints: Min {fan_constraints.min}% - Max {fan_constraints.max}%')
 
 def fan_control(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
@@ -196,7 +217,7 @@ def fan_control(configuration):
 # Control GPU functions and monitor for changes (e.g. temperature)
 def fan_control_subroutine(gpu_handle, configuration):
         
-    current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, 0)
+    current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
 
     log_helper(f'Current temp: {current_temp}°C')
