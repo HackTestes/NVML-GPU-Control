@@ -281,7 +281,7 @@ def set_power_limit(gpu_handle, power_limit_watts, dry_run):
 
     # Setting the power limit can be DANGEROUS! Use dry run for testing before actual changes
     if dry_run != True:
-        pynvml.nvmlDeviceSetPowerManagementLimit(gpu_handle, int(power_limit_watts / 1000))
+        pynvml.nvmlDeviceSetPowerManagementLimit(gpu_handle, int(power_limit_watts * 1000))
 
 # Current power limit defined by the user, but it might defer from the enforced one
 def get_current_power_limit_watts(gpu_handle):
