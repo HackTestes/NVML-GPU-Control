@@ -52,6 +52,9 @@ ACTIONS
     fan-control
           Monitor and controls the fan speed of the selected card (you must select a target card)
 
+    fan-info
+          Shows information about fan speed
+
     fan-policy <--auto|--manual>
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
     
@@ -105,6 +108,7 @@ OPTIONS
 
     --single-use OR -su
           Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
+
 '''
     print(help_text)
 
@@ -269,6 +273,10 @@ def set_fan_policy(gpu_handle, policy, dry_run):
         # Setting the fan control policy can be DANGEROUS! Use dry run for testing before actual changes
         if dry_run != True:
             fan_speed = pynvml.nvmlDeviceSetFanControlPolicy(gpu_handle, fan_idx, policy)
+
+            # Also set the default fan speed for extra safety (automatic only)
+            if policy == pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW:
+                pynvml.nvmlDeviceSetDefaultFanSpeed_v2(gpu_handle, fan_idx)
             
 def fan_policy(configuration):
 
@@ -282,10 +290,10 @@ def fan_policy(configuration):
     print(fan_policy_info_msg(current_policy.value))
 
     if target_fan_policy == 'automatic':
-        set_fan_policy(gpu_handle, 0, configuration.dry_run)
+        set_fan_policy(gpu_handle, pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW, configuration.dry_run)
 
     elif target_fan_policy == 'manual':
-        set_fan_policy(gpu_handle, 1, configuration.dry_run)
+        set_fan_policy(gpu_handle, pynvml.NVML_FAN_POLICY_MANUAL, configuration.dry_run)
 
     print('New fan control policy set sucessfully!')
 
