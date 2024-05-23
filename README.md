@@ -110,6 +110,11 @@ sudo python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -
 python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
+- You can also revert to the original state
+```
+python.exe ./nvml_gpu_control.py fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
+```
+
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staircase graph)
 
 ```
@@ -316,13 +321,13 @@ On of the limitations involve not being able to change the start working directo
 1. Create a service file
 ```
 [Unit]
-Description=NVIDIA Fan Control service
+Description=Unofficial NVIDIA Fan Control service
 ConditionUser=0
 
 [Service]
 Type=simple
-WorkingDirectory=/
-ExecStart=/usr/bin/python3 /usr/bin/nvml_gpu_control.py -t "RTX 3080" -sp 10:20,20:35:30:50,35:100
+WorkingDirectory=/usr/bin/User_NVIDIA_GPU_Control/
+ExecStart=/usr/bin/python3 /usr/bin/User_NVIDIA_GPU_Control/nvml_gpu_control.py -n "RTX 3080" -sp 10:20,20:35:30:50,35:100
 Restart=always
 KillSignal=SIGQUIT
 
