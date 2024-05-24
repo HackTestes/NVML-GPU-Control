@@ -387,3 +387,21 @@ WantedBy=multi-user.target
 - [ ] Logging to file option (with message size limit) -> user can spawn another instance with the same arguments and pass the `--dry-run` option as it should mirror the output of the privileged one
 
 - [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unecessary as users can generate all speed points elsewhere and just pass it as arguments
+
+## Support
+
+I will be suporting this program as long as have NVIDIA GPUs (especially bacause I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
+
+If I loose the need for this software (aka change my hardware), I will make sure to update this notice.
+
+## Contribute
+
+Just a few guidelines and style decisions:
+
+- variable_name
+
+- function_name
+
+- ObjectOrClassName
+
+- Other dependencies are DISALLOWED, I want to limit the dependencies as much as possible as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
