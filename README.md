@@ -404,4 +404,4 @@ Just a few guidelines and style decisions:
 
 - ObjectOrClassName
 
-- Other dependencies are DISALLOWED, I want to limit the dependencies as much as possible as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
+- Other dependencies are DISALLOWED, I want to limit the dependencies as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
