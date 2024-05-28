@@ -205,7 +205,7 @@ OPTIONS
           Sets the power limit of the GPU in watts
 
     --acoustic-temp-limit OR -tl <TEMPERATURE_CELSIUS>
-          Sets the acoustic threshold in celsious (note that this is the same temperature limit used by GeForce Experice)
+          Sets the acoustic threshold in celsious (note that this is the same temperature limit used by GeForce Experience)
 
     --single-use OR -su
           Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
