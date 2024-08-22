@@ -219,6 +219,9 @@ def parse_cmd_args(args):
             configuration.power_limit = int(args[i+1])
             i += 1 # Skip the next iteration
 
+        elif (arg == '--linear'):
+            configuration.curve_type = "linear"
+
         else:
             print(f'Invalid option: {arg}')
             raise InvalidOption('The option given was invalid')

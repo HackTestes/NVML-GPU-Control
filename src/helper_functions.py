@@ -109,6 +109,8 @@ OPTIONS
     --single-use OR -su
           Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
 
+    --linear
+          Use a linear method to calculate the temperature-speed curve (Note: This depends on the settings in --speed-pair)
 '''
     print(help_text)
 
@@ -217,6 +219,8 @@ def fan_control(configuration):
 
         time.sleep(configuration.time_interval)
 
+def cal_linear_new_fanspeed(prev_fan_point, prev_temp_point, curr_fan_point, curr_temp_point):
+    return (prev_fan_point - curr_fan_point) / (prev_temp_point - curr_temp_point);
 
 # Control GPU functions and monitor for changes (e.g. temperature)
 def fan_control_subroutine(gpu_handle, configuration):
@@ -231,17 +235,29 @@ def fan_control_subroutine(gpu_handle, configuration):
     for idx, fan_speed_c in enumerate(get_gpu_fan_speed_per_controller(gpu_handle)):
         log_helper(f'Fan controller speed {idx}: {fan_speed_c}%')
 
+    prev_fan_point, prev_temp_point = 0, 0
+
     for pair in configuration.temp_speed_pair:
+
+        if (configuration.curve_type == "linear" and current_temp < pair.temperature):
+            prev_fan_point = pair.speed
+            prev_temp_point = pair.temperature
 
         # Remember that that list starts by the highest temp value and keeps lowering it
         if current_temp >= pair.temperature:
 
+            new_speed = pair.speed
+
+            if configuration.curve_type == "linear":
+                new_speed = round(
+                    cal_linear_new_fanspeed(prev_fan_point, prev_temp_point, pair.speed, pair.temperature) * (current_temp - pair.temperature)
+                ) + pair.speed
+
             # Only send commands to the GPU if necessary (if the current setting is different from the targeted one)
             #if previous_speed != pair.speed or current_speed != pair.speed:
-            if current_speed != pair.speed:
-                set_gpu_fan_speed(gpu_handle, pair.speed, configuration.dry_run)
-                #previous_speed = pair.speed
-                log_helper(f'Setting GPU fan speed: {pair.speed}%')
+            if current_speed != new_speed:
+                set_gpu_fan_speed(gpu_handle, new_speed, configuration.dry_run)
+                log_helper(f'Setting GPU fan speed: {new_speed}%')
             else:
                 log_helper(f'Same as previous speed, nothing to do!')
 
