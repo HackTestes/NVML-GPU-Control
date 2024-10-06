@@ -312,7 +312,7 @@ schtasks /create
 /rl HIGHEST
 ```
 
-On of the limitations involve not being able to change the start working directory, so some paths in the scripts might break. Overall, I do not recommend this approach on Windows, users should opt for the GUI method.
+One of the limitations involve not being able to change the start working directory, so some paths in the scripts might break. Overall, I do not recommend this approach on Windows, users should opt for the GUI method.
 
 #### Linux (systemd / cronjob) - **Not ready**
 
@@ -341,7 +341,7 @@ WantedBy=multi-user.target
 
 1. Having an admin prompt under the same desktop
 
-      An opened prompt under the same desktop can receive key command from non-privileged programs, allowing any program to escalate to admin. To mitigate this it is necessary to restrict all onther programs with a UI limit JobObject, create the window under a new desktop or not create any windows on the desktop (this is how it is done under the guide).
+      An opened prompt under the same desktop can receive key command from non-privileged programs, allowing any program to escalate to admin. To mitigate this it is necessary to restrict all other programs with a UI limit JobObject, create the window under a new desktop or not create any windows on the desktop (this is how it is done under the guide).
 
 2. Programs that start automatically as admin must be secured against writes
 
@@ -390,7 +390,7 @@ WantedBy=multi-user.target
 
 ## Support
 
-I will be suporting this program as long as have NVIDIA GPUs (especially bacause I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
+I will be suporting this program as long as I have NVIDIA GPUs (especially bacause I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
 
 If I loose the need for this software (aka change my hardware), I will make sure to update this notice.
 
@@ -405,3 +405,5 @@ Just a few guidelines and style decisions:
 - ObjectOrClassName
 
 - Other dependencies are DISALLOWED, I want to limit the dependencies as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
+
+- Code should be testable, so please include unit tests to your code. If you think that certain parts are just too hard to make tests, include a juntification
