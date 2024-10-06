@@ -275,16 +275,25 @@ def set_fan_policy(gpu_handle, policy, dry_run):
             if policy == pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW:
                 pynvml.nvmlDeviceSetDefaultFanSpeed_v2(gpu_handle, fan_idx)
 
+def get_fan_policy(gpu_handle):
+    current_policy = ctypes.c_uint(0)
+
+    # The library unfortunately still needs pointers, this is why I need to use ctypes
+    pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
+
+    return current_policy.value
+
+def print_fan_policy_info(configuration):
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
+    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ))
+
 def fan_policy(configuration):
 
-    current_policy = ctypes.c_uint(0)
     target_fan_policy = configuration.fan_policy
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
-    # The library unfortunately still needs pointers
-    pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
-
-    print(fan_policy_info_msg(current_policy.value))
+    # Get the current policy before setting anything
+    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ))
 
     if target_fan_policy == 'automatic':
         set_fan_policy(gpu_handle, pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW, configuration.dry_run)
@@ -295,8 +304,7 @@ def fan_policy(configuration):
     print('New fan control policy set sucessfully!')
 
     # Get the new policy
-    pynvml.nvmlDeviceGetFanControlPolicy_v2(gpu_handle, 0, ctypes.byref(current_policy))
-    print(fan_policy_info_msg(current_policy.value))
+    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ) + "\n")
 
 # Power control
 

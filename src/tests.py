@@ -294,7 +294,7 @@ class TestMethods(unittest.TestCase):
         msg = main_funcs.fan_policy_info_msg(ctypes.c_uint(100).value)
         self.assertEqual('Unknown fan control policy', msg)
 
-#    # GPU Functions - I wull need to improve the tests later
+#    # GPU Functions - I will need to improve the tests later
 #
 #    def test_gpu_something(self):
 #        # Mocking

@@ -115,6 +115,9 @@ def parse_cmd_args(args):
     elif (action == 'fan-policy'):
         configuration.action = 'fan-policy'
 
+    elif (action == 'fan-policy-info'):
+        configuration.action = 'fan-policy-info'
+
     elif (action == 'power-limit-info'):
         configuration.action = 'get-power-limit-info'
 

@@ -46,6 +46,9 @@ def main():
             case 'fan-policy':
                 main_funcs.fan_policy(config)
 
+            case 'fan-policy-info':
+                main_funcs.print_fan_policy_info(config)
+
             # Power control
             case 'power-control':
                 main_funcs.power_control(config)
