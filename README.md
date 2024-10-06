@@ -158,7 +158,10 @@ ACTIONS
 
     fan-policy <--auto|--manual>
           Changes the fan control policy to automatic (vBIOS controlled) or manual. Note that when the fan speed is changed, the NVML library automatically changes this setting to manual. This setting is useful to change the GPU back to its original state
-    
+
+    fan-policy-info
+          Shows information about the current fan policy
+
     power-limit-info
           Shows information about the power limit of the selected GPU
 
@@ -199,7 +202,7 @@ OPTIONS
           Sets the fan policy to manual
 
     --auto
-          Sets the fan policy to automatic (vBIOS contolled)
+          Sets the fan policy to automatic (vBIOS controlled)
 
     --power-limit OR -pl <POWER_LIMIT_WATTS>
           Sets the power limit of the GPU in watts

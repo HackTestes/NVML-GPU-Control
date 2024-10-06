@@ -1,3 +1,5 @@
+import helper_functions
+
 class InvalidAction(Exception):
     pass
 
@@ -134,7 +136,8 @@ def parse_cmd_args(args):
         configuration.action = 'control-all'
 
     else:
-        print(f'Invalid action: {action}')
+        helper_functions.print_help()
+        print(f'Invalid action: {action}\n\n')
         raise InvalidAction("The action passed as argument is incorrect")
 
 
@@ -210,7 +213,8 @@ def parse_cmd_args(args):
             i += 1 # Skip the next iteration
 
         else:
-            print(f'Invalid option: {arg}')
+            helper_functions.print_help()
+            print(f'Invalid option: {arg}\n\n')
             raise InvalidOption('The option given was invalid')
 
         # Change iteration

@@ -29,6 +29,10 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--auto'])
         self.assertEqual( config.action, 'fan-policy')
 
+    def test_parse_args_fan_policy_info(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-policy-info', '--name', 'RTX 4080'])
+        self.assertEqual( config.action, 'fan-policy-info')
+
     def test_parse_args_fan_info(self):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-info', '--name', 'RTX 4080'])
         self.assertEqual( config.action, 'fan-info')
