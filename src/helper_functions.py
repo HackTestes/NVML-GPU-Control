@@ -209,7 +209,6 @@ def print_fan_info(configuration):
 def fan_control(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
     print_GPU_info(gpu_handle)
-    #control_and_monitor(gpu_handle, configuration)
 
     # Infinite loop, one must kill the process to stop it
     while(True):
@@ -220,12 +219,12 @@ def fan_control(configuration):
 
 # Control GPU functions and monitor for changes (e.g. temperature)
 def fan_control_subroutine(gpu_handle, configuration):
-        
+
     current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
 
     log_helper(f'Current temp: {current_temp}°C')
-    log_helper(f'Current speed: {current_speed}%') # Minitor for fan fan speed changes and reajust! 
+    log_helper(f'Current speed: {current_speed}%') # Monitor for fan fan speed changes and reajust! 
 
     # Get the fan speed per controller
     for idx, fan_speed_c in enumerate(get_gpu_fan_speed_per_controller(gpu_handle)):
@@ -237,10 +236,8 @@ def fan_control_subroutine(gpu_handle, configuration):
         if current_temp >= pair.temperature:
 
             # Only send commands to the GPU if necessary (if the current setting is different from the targeted one)
-            #if previous_speed != pair.speed or current_speed != pair.speed:
             if current_speed != pair.speed:
                 set_gpu_fan_speed(gpu_handle, pair.speed, configuration.dry_run)
-                #previous_speed = pair.speed
                 log_helper(f'Setting GPU fan speed: {pair.speed}%')
             else:
                 log_helper(f'Same as previous speed, nothing to do!')
@@ -277,7 +274,7 @@ def set_fan_policy(gpu_handle, policy, dry_run):
             # Also set the default fan speed for extra safety (automatic only)
             if policy == pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW:
                 pynvml.nvmlDeviceSetDefaultFanSpeed_v2(gpu_handle, fan_idx)
-            
+
 def fan_policy(configuration):
 
     current_policy = ctypes.c_uint(0)
@@ -431,7 +428,7 @@ def print_thresholds_info(configuration):
     print(f'Temperature threshold - maximum acoustic: {temperarure_thresholds.max_acoustic}°C')
 
 def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run):
-    
+
     current_temp_thresholds = get_temperarure_thresholds(gpu_handle)
 
     log_helper(f'Current acoustic threshold: {current_temp_thresholds.current_acoustic}°C')
@@ -448,7 +445,7 @@ def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run):
 
 
 def temp_control(configuration):
-    
+
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
     print_GPU_info(gpu_handle)
 
@@ -462,15 +459,17 @@ def temp_control(configuration):
 
 
 def control_all(configuration):
-    
+
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
     print_GPU_info(gpu_handle)
 
     while(True):
 
+        # If this settings is different than the default, the user has enabled it
         if configuration.power_limit != 0:
             power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run)
 
+        # If this settings is different than the default, the user has enabled it
         if configuration.acoustic_temp_limit != 0:
             temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run)
 

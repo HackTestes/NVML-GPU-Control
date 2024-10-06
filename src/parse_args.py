@@ -57,23 +57,14 @@ class TempSpeedPair:
 
         else:
             return False
-        
+
 # Some sane checks (in case the user makes a bad config by accident)
 def validate_config(config):
-
-#    if config.target_gpu == '':
-#        print("You did not select a target GPU")
-#        raise InvalidConfig("No GPU was selected")
 
     # At least one of the target setting must be configured
     if config.gpu_name == '' and config.gpu_uuid == '':
         print("You did not select a target GPU")
         raise InvalidConfig("No GPU was selected")
-
-    # A user will always have a default speed set, so I don't think this check is necessary
-    #if len(config.temp_speed_pair) == 0:
-    #    print("You did not create fan points (see --speed-pairs)")
-    #    raise InvalidConfig("Has no fan curve")
 
     # fan-policy needs a mode
     if config.action == 'fan-policy':
@@ -95,7 +86,7 @@ def validate_config(config):
 
 
 def parse_cmd_args(args):
-    
+
     configuration = Configuration()
 
     if len(args) == 1:
@@ -149,10 +140,6 @@ def parse_cmd_args(args):
     while(i < len(args)):
 
         arg = args[i]
-
-#        if (arg == '--target' or arg == '-t'):
-#            configuration.target_gpu = args[i+1]
-#            i += 1 # Skip the next iteration
 
         if (arg == '--name' or arg == '-n'):
             configuration.gpu_name = args[i+1]
