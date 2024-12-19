@@ -9,7 +9,7 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 
 ## Supported hardware
 
-- Any NVIDIA CUDA suported card with a driver higher or equal to version 520 
+- Any NVIDIA CUDA supported card with a driver higher or equal to version 520 
 
 ## Dependencies
 
@@ -51,7 +51,7 @@ git clone https://github.com/HackTestes/NVML-GPU-Control NVML_GPU_Control
 mkdir 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
 # Linux
-mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
+sudo mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
 ```
 
 3. Copy the scripts files from the repository to the new directory
@@ -60,7 +60,7 @@ mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
 cp 'C:\Path_to_the_repository\NVML_GPU_Control\src\*' 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
 # Linux
-cp '/Path_to_the_repository/NVML_GPU_Control/src/*' '/usr/bin/User_NVIDIA_GPU_Control\'
+sudo cp '/Path_to_the_repository/NVML_GPU_Control/src/*' '/usr/bin/User_NVIDIA_GPU_Control/'
 ```
 
 **Additional notes**: you may also need to install the library as admin or install it as a normal user and then lock the files(change the permissions and take ownership as root/admin).
@@ -317,26 +317,39 @@ schtasks /create
 
 One of the limitations involve not being able to change the start working directory, so some paths in the scripts might break. Overall, I do not recommend this approach on Windows, users should opt for the GUI method.
 
-#### Linux (systemd / cronjob) - **Not ready**
+#### Linux (systemd)
 
-##### Systemd timer
+This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so very time the computer starts the control will resume their work.
 
-1. Create a service file
+##### Systemd service
+
+1. Take a look at the systemd service at `linux_config/unofficial-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration (Note: you can use the UUID as well).
+
+1. Copy the unit file into `/etc/systemd/system/` (needs root)
 ```
-[Unit]
-Description=Unofficial NVIDIA Fan Control service
-ConditionUser=0
-
-[Service]
-Type=simple
-WorkingDirectory=/usr/bin/User_NVIDIA_GPU_Control/
-ExecStart=/usr/bin/python3 /usr/bin/User_NVIDIA_GPU_Control/nvml_gpu_control.py -n "RTX 3080" -sp 10:20,20:35:30:50,35:100
-Restart=always
-KillSignal=SIGQUIT
-
-[Install]
-WantedBy=multi-user.target
+sudo cp ./linux_config/unofficial-gpu-nvml-control.service /etc/systemd/system/
 ```
+
+1. Enable the service (needs root)
+```
+sudo systemctl enable unofficial-gpu-nvml-control.service
+```
+
+1. Start the service (needs root)
+```
+sudo systemctl start unofficial-gpu-nvml-control.service
+```
+
+1. Troubleshoot if needed (get the stdout from the service)
+```
+sudo journalctl -u unofficial-gpu-nvml-control.service
+```
+
+Reload service
+```
+sudo systemctl daemon-reload
+```
+
 
 ## Security considerations
 
@@ -359,7 +372,7 @@ WantedBy=multi-user.target
 
 2. Programs that start automatically as admin must be secured against writes
 
-      Same as Windows. All of the executables and scripts must be accessible only to the root user (UID 0).
+      Same as Windows. All of the executables and scripts must be accessible only to the root user (UID 0). I recommend to install the pynvml library with the distro's package manager.
 
 ## Roadmap (features to be added)
 
@@ -389,11 +402,11 @@ WantedBy=multi-user.target
 
 - [ ] Logging to file option (with message size limit) -> user can spawn another instance with the same arguments and pass the `--dry-run` option as it should mirror the output of the privileged one
 
-- [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unecessary as users can generate all speed points elsewhere and just pass it as arguments
+- [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unnecessary as users can generate all speed points elsewhere and just pass it as arguments
 
 ## Support
 
-I will be suporting this program as long as I have NVIDIA GPUs (especially bacause I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
+I will be supporting this program as long as I have NVIDIA GPUs (especially because I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
 
 If I loose the need for this software (aka change my hardware), I will make sure to update this notice.
 

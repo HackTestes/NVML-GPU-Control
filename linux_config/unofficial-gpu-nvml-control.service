@@ -1,0 +1,14 @@
+[Unit]
+Description=Unofficial NVIDIA Control service
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/usr/bin/User_NVIDIA_GPU_Control/
+ExecStart=/usr/bin/python3 /usr/bin/User_NVIDIA_GPU_Control/nvml_gpu_control.py control-all -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
+Restart=always
+KillSignal=SIGQUIT
+
+[Install]
+WantedBy=multi-user.target
