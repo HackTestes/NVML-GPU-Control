@@ -60,7 +60,7 @@ sudo mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
 cp 'C:\Path_to_the_repository\NVML_GPU_Control\src\*' 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
 # Linux
-sudo cp '/Path_to_the_repository/NVML_GPU_Control/src/*' '/usr/bin/User_NVIDIA_GPU_Control/'
+sudo cp -r /Path_to_the_repository/NVML_GPU_Control/src/* /usr/bin/User_NVIDIA_GPU_Control/
 ```
 
 **Additional notes**: you may also need to install the library as admin or install it as a normal user and then lock the files(change the permissions and take ownership as root/admin).
