@@ -80,10 +80,10 @@ ACTIONS
 OPTIONS
 
     --name OR -n <GPU_NAME>
-          Select a target GPU by its name. Note: UUID has preference over name
+          Select a target GPU by its name. Example: --name "NVIDIA GeForce RTX 4080". Note: UUID has preference over name
 
     --uuid OR -id <GPU_UUID>
-          Select a target GPU by its Universally Unique IDentifier (UUID). Note: UUID has preference over name
+          Select a target GPU by its Universally Unique IDentifier (UUID). Example: --uuid "GPU-00000000-0000-0000-0000-000000000000". Note: UUID has preference over name
 
     --time-interval OR -ti <TIME_SECONDS>
           Time period to wait before probing the GPU again. Works for all actions that run in a loop
