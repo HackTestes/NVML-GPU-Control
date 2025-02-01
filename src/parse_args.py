@@ -31,6 +31,7 @@ class Configuration:
         self.curve_type = "fixed" # Currently for internal usage only (I want to later add calculation for lines and curves fuctions)
         self.default_speed = 50 # Percentage
         self.time_interval = 1.0 # In seconds
+        self.retry_interval_s = 1.0 # In seconds
         self.dry_run = False
         self.fan_policy = ''
         self.single_use = False
@@ -189,6 +190,10 @@ def parse_cmd_args(args):
 
         elif (arg == '--time-interval' or arg == '-ti'):
             configuration.time_interval = float(args[i+1])
+            i += 1 # Skip the next iteration
+
+        elif (arg == '--retry-interval' or arg == '-ri'):
+            configuration.retry_interval_s = float(args[i+1])
             i += 1 # Skip the next iteration
 
         elif (arg == '--dry-run' or arg == '-dr'):

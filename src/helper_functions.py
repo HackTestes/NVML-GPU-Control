@@ -86,7 +86,10 @@ OPTIONS
           Select a target GPU by its Universally Unique IDentifier (UUID). Example: --uuid "GPU-00000000-0000-0000-0000-000000000000". Note: UUID has preference over name
 
     --time-interval OR -ti <TIME_SECONDS>
-          Time period to wait before probing the GPU again. Works for all actions that run in a loop
+          Time period in seconds to wait before probing the GPU again. Works for all actions that run in a loop
+
+    --retry-interval OR -ri <TIME_SECONDS>
+          Time period in seconds to wait before trying to issue commands to the GPU again. Works for all actions that run in a loop
 
     --dry-run OR -dr
           Run the program, but don't change/set anything. Useful for testing the behavior of the program
