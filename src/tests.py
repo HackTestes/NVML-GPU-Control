@@ -131,6 +131,10 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.time_interval, 0.5)
 
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ti', '0', '-n', 'RTX 3080'])
+        self.assertEqual( config.action, 'fan-control')
+        self.assertEqual( config.time_interval, 0)
+
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertTrue( config.time_interval <= 1) # Default should never be higher than 1s, unless the user states so
@@ -149,9 +153,13 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'fan-control')
         self.assertEqual( config.retry_interval_s, 0.5)
 
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-ri', '0', '-n', 'RTX 3080'])
+        self.assertEqual( config.action, 'fan-control')
+        self.assertEqual( config.retry_interval_s, 0)
+
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
-        self.assertTrue( config.retry_interval_s <= 1) # Default should never be higher than 1s, unless the user states so
+        self.assertTrue( config.retry_interval_s <= 2) # Default should never be higher than 2s, unless the user states so
 
     def test_parse_args_option_retry_interval_Error_negative_time(self):
 

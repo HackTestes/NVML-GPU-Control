@@ -34,7 +34,7 @@ class Configuration:
         self.curve_type = "fixed" # Currently for internal usage only (I want to later add calculation for lines and curves fuctions)
         self.default_speed = 50 # Percentage
         self.time_interval = 1.0 # In seconds
-        self.retry_interval_s = 1.0 # In seconds
+        self.retry_interval_s = 2.0 # In seconds
         self.dry_run = False
         self.fan_policy = ''
         self.single_use = False
