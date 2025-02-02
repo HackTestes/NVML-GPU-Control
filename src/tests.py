@@ -135,6 +135,11 @@ class TestMethods(unittest.TestCase):
         self.assertEqual( config.action, 'fan-control')
         self.assertTrue( config.time_interval <= 1) # Default should never be higher than 1s, unless the user states so
 
+    def test_parse_args_option_time_interval_Error_negative_time(self):
+
+        with self.assertRaises(parse_args.InvalidTimeParameter):
+            parse_args.parse_cmd_args(['.python_script', 'fan-control', '--time-interval', '-5', '-n', 'RTX 3080'])
+
     def test_parse_args_option_retry_interval(self):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--retry-interval', '5', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
@@ -147,6 +152,11 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080'])
         self.assertEqual( config.action, 'fan-control')
         self.assertTrue( config.retry_interval_s <= 1) # Default should never be higher than 1s, unless the user states so
+
+    def test_parse_args_option_retry_interval_Error_negative_time(self):
+
+        with self.assertRaises(parse_args.InvalidTimeParameter):
+            parse_args.parse_cmd_args(['.python_script', 'fan-control', '--retry-interval', '-5', '-n', 'RTX 3080'])
 
     def test_parse_args_temp_speed_pair(self):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '--speed-pair', '0:0,10:30,20:50,35:75,40:100', '-n', 'RTX 3080'])

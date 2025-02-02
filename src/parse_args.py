@@ -15,6 +15,9 @@ class InvalidFanSpeed(Exception):
 class InsufficientArgs(Exception):
     pass
 
+class InvalidTimeParameter(Exception):
+    pass
+
 class InvalidConfig(Exception):
     pass
 
@@ -192,9 +195,19 @@ def parse_cmd_args(args):
             configuration.time_interval = float(args[i+1])
             i += 1 # Skip the next iteration
 
+            # Refuse to continue with negative time values
+            if configuration.time_interval < 0:
+                print("You cannot use negative time values for intervals")
+                raise InvalidTimeParameter("Invalid time parameter")
+
         elif (arg == '--retry-interval' or arg == '-ri'):
             configuration.retry_interval_s = float(args[i+1])
             i += 1 # Skip the next iteration
+
+            # Refuse to continue with negative time values
+            if configuration.retry_interval_s < 0:
+                print("You cannot use negative time values for intervals")
+                raise InvalidTimeParameter("Invalid time parameter")
 
         elif (arg == '--dry-run' or arg == '-dr'):
             configuration.dry_run = True
