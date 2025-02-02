@@ -105,12 +105,12 @@ python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
 python.exe ./nvml_gpu_control.py fan-control -id GPU-00000000-0000-0000-0000-000000000000
 ```
 
-- And the fan speed for each temperature level 
+- And the fan speed for each temperature level (requires admin)
 ```
 sudo python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
-- You could also use the `--dry-run` for testing! 
+- You could also use the `--dry-run` for testing! (no admin)
 ```
 python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
@@ -230,7 +230,7 @@ python.exe ./src/tests.py -b
 ```
 
 
-### Setting up services or tasks (under development)
+### Setting up services or tasks
 
 This section will present some simple commands to setup services or tasks that start as admin and run the configured program with the configured settings. You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID in Linux).
 
@@ -430,4 +430,4 @@ Just a few guidelines and style decisions:
 
 - Other dependencies are DISALLOWED, I want to limit the dependencies as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
 
-- Code should be testable, so please include unit tests to your code. If you think that certain parts are just too hard to make tests, include a juntification
+- Code should be testable, so please include unit tests to your code. If you think that certain parts are just too hard to make tests, include a justification
