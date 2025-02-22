@@ -17,7 +17,7 @@ To use it, you must have installed:
 
 - NVIDIA's proprietary drivers (>= v520)
 - Python 3
-- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.535.133)
+- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.570.86) (path `C:\Program Files\Python313\Lib\site-packages`)
 
 You will also need **admin/root** privileges to be able to **set the fan speed**. 
 

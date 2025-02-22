@@ -130,7 +130,7 @@ def print_GPU_info(gpu_handle):
     log_helper(f'Device name : {pynvml.nvmlDeviceGetName(gpu_handle)}')
     log_helper(f'Device UUID : {pynvml.nvmlDeviceGetUUID(gpu_handle)}')
     log_helper(f'Device fan speed : {pynvml.nvmlDeviceGetFanSpeed(gpu_handle)}%')
-    log_helper(f'Temperature {pynvml.nvmlDeviceGetTemperature(gpu_handle, 0)}°C')
+    log_helper(f'Temperature {pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)}°C')
     log_helper(f"Fan controller count {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
 
 
@@ -199,7 +199,7 @@ def print_fan_info(configuration):
 
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
-    current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
+    current_temp = pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
     fan_constraints = get_gpu_fan_speed_constraints(gpu_handle)
 
@@ -226,7 +226,7 @@ def fan_control(configuration):
 # Control GPU functions and monitor for changes (e.g. temperature)
 def fan_control_subroutine(gpu_handle, configuration):
 
-    current_temp = pynvml.nvmlDeviceGetTemperature(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
+    current_temp = pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
 
     log_helper(f'Current temp: {current_temp}°C')
