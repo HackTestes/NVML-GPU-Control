@@ -3,6 +3,8 @@ import datetime
 import time
 import ctypes
 
+output_separator = '==============================================='
+
 class UnsupportedDriverVersion(Exception):
     pass
 
@@ -203,6 +205,7 @@ def print_fan_info(configuration):
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
     fan_constraints = get_gpu_fan_speed_constraints(gpu_handle)
 
+    print(f'{output_separator}')
     print(f'Current temp: {current_temp}°C')
     print(f'Current speed: {current_speed}%') # Minitor for fan fan speed changes and reajust! 
 
@@ -211,6 +214,7 @@ def print_fan_info(configuration):
         print(f'Fan controller speed {idx}: {fan_speed_c}%')
 
     print(f'Fan constraints: Min {fan_constraints.min}% - Max {fan_constraints.max}%')
+    print(f'{output_separator}')
 
 def fan_control(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
@@ -291,7 +295,9 @@ def get_fan_policy(gpu_handle):
 
 def print_fan_policy_info(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
+    print(f'{output_separator}')
     print(fan_policy_info_msg( get_fan_policy(gpu_handle) ))
+    print(f'{output_separator}')
 
 def fan_policy(configuration):
 
@@ -345,9 +351,11 @@ def print_power_limit_info(configuration):
     current_pl = get_current_power_limit_watts(gpu_handle)
     current_enforced_pl = get_enforced_power_limit_watts(gpu_handle)
 
+    print(f'{output_separator}')
     print(f'Power limit constraints\nMin: {constraints.min}W - Max: {constraints.max}W\n')
     print(f'Current power limit: {current_pl}W\n')
     print(f'Current enforced power limit: {current_enforced_pl}W\n')
+    print(f'{output_separator}')
 
 def power_control_subroutine(gpu_handle, target_power_limit, dry_run):
     power_limit_constraints_watts = get_power_limit_constraints_watts(gpu_handle)
@@ -433,6 +441,7 @@ def print_thresholds_info(configuration):
 
     temperarure_thresholds = get_temperarure_thresholds(gpu_handle)
 
+    print(f'{output_separator}')
     #print(f'Temperature threshold - shutdown: {temperarure_thresholds.shutdown}°C')
     #print(f'Temperature threshold - slowdown: {temperarure_thresholds.slowdown}°C')
     #print(f'Temperature threshold - max memory temperature: {temperarure_thresholds.max_memory}°C')
@@ -440,6 +449,7 @@ def print_thresholds_info(configuration):
     print(f'Temperature threshold - current acoustic: {temperarure_thresholds.current_acoustic}°C')
     print(f'Temperature threshold - minimum acoustic: {temperarure_thresholds.min_acoustic}°C')
     print(f'Temperature threshold - maximum acoustic: {temperarure_thresholds.max_acoustic}°C')
+    print(f'{output_separator}')
 
 def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run):
 
