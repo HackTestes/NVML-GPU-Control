@@ -1,5 +1,23 @@
 import pynvml
+import os
+import subprocess
+import sys
 from ctypes import *
+
+
+print(f'argv: {sys.argv}')
+print(f"os.execv(`{sys.executable}`, {sys.argv})")
+print(f"'{sys.executable}' {' '.join(sys.argv)}")
+
+restart = input("Restart? Y/N\n")
+
+if restart == "Y":
+    print("Restarting now...")
+    os.execv(sys.executable, ['python3'] + sys.argv)
+    #os.system(f'"{sys.executable}" {" ".join(sys.argv)}')
+    #subprocess.run([sys.executable] + sys.argv, timeout=1)
+    
+quit()
 
 pynvml.nvmlInit()
 

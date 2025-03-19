@@ -14,18 +14,22 @@ def main():
         return
 
     try:
-        # Starting nvml
-        nvmlInit()
-
         # Verify driver version
         try:
+
+            # Call nvml init and shutdown as an exception (special case), because I need it to restart in a loop later 
+            nvmlInit()
             main_funcs.check_driver_version(nvmlSystemGetDriverVersion())
+            nvmlShutdown()
 
         except main_funcs.UnsupportedDriverVersion:
             print('WARNING: You are running an unsupported driver, you may have problems')
 
         while(True):
             try:
+                # Start nvml (or again in case of errors)
+                nvmlInit()
+                
                 match config.action:
 
                     # Information query
@@ -70,8 +74,11 @@ def main():
             except Exception as error:
                 print(f"Logging error: {error}")
                 print(f"Retrying in {config.retry_interval_s} seconds\n")
-                time.sleep(config.retry_interval_s)
-                
+
+                # Clear all handles that nvml is holding, so errors won't persist across runs
+                nvmlShutdown()
+
+                time.sleep(config.retry_interval_s)                
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:
