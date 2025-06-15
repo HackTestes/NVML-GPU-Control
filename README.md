@@ -327,28 +327,28 @@ One of the limitations involve not being able to change the start working direct
 
 #### Linux (systemd)
 
-This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so very time the computer starts the control will resume their work.
+This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so every time the computer starts the control will resume their work.
 
 ##### Systemd service
 
 1. Take a look at the systemd service at `linux_config/unofficial-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration (Note: you can use the UUID as well).
 
-1. Copy the unit file into `/etc/systemd/system/` (needs root)
+2. Copy the unit file into `/etc/systemd/system/` (needs root)
 ```
 sudo cp ./linux_config/unofficial-gpu-nvml-control.service /etc/systemd/system/
 ```
 
-1. Enable the service (needs root)
+3. Enable the service (needs root)
 ```
 sudo systemctl enable unofficial-gpu-nvml-control.service
 ```
 
-1. Start the service (needs root)
+4. Start the service (needs root)
 ```
 sudo systemctl start unofficial-gpu-nvml-control.service
 ```
 
-1. Troubleshoot if needed (get the stdout from the service)
+5. Troubleshoot if needed (get the stdout from the service)
 ```
 sudo journalctl -u unofficial-gpu-nvml-control.service
 ```
