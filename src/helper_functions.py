@@ -42,7 +42,7 @@ def log_helper(msg):
 
 def print_help():
     help_text = '''
-python.exe .\\nvml_gpu_control.py <ACTION> <OPTIONS>
+python ./nvml_gpu_control.py <ACTION> <OPTIONS>
 
 ACTIONS
     help
