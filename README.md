@@ -17,7 +17,11 @@ To use it, you must have installed:
 
 - NVIDIA's proprietary drivers (>= v520)
 - Python 3
-- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.570.86) (path `C:\Program Files\Python313\Lib\site-packages`)
+- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.570.86)
+
+> [!NOTE]
+> Your distro may package the nvidia-ml-py, so chek it first
+> Windows path if using admin: `C:\Program Files\Python313\Lib\site-packages`
 
 You will also need **admin/root** privileges to be able to **set the fan speed**. 
 
@@ -89,35 +93,38 @@ rm --interactive --preserve-root -R '/usr/bin/User_NVIDIA_GPU_Control'
 cd ./src
 ```
 
+> [!NOTE]
+> The python command on Windows may require the **.exe** at the end (like this "python.exe")
+
 - You must first list all cards that are connected, so you can get the name or UUID
 
 ```
-python.exe ./nvml_gpu_control.py list
+python ./nvml_gpu_control.py list
 ```
 
 - Then you can select a target by name
 ```
-python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
+python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
 ```
 
 - Or by UUID
 ```
-python.exe ./nvml_gpu_control.py fan-control -id GPU-00000000-0000-0000-0000-000000000000
+python ./nvml_gpu_control.py fan-control -id GPU-00000000-0000-0000-0000-000000000000
 ```
 
 - And the fan speed for each temperature level (requires admin)
 ```
-sudo python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+sudo python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
 - You could also use the `--dry-run` for testing! (no admin)
 ```
-python.exe ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
+python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
 - You can also revert to the original state
 ```
-python.exe ./nvml_gpu_control.py fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
+python ./nvml_gpu_control.py fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
 ```
 
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staircase graph)
@@ -146,7 +153,7 @@ ___________________________
 #### Usage docs
 
 ```
-python.exe .\nvml_gpu_control.py <ACTION> <OPTIONS>
+python ./nvml_gpu_control.py <ACTION> <OPTIONS>
 
 ACTIONS
     help
@@ -226,7 +233,7 @@ OPTIONS
 ##### Running tests
 
 ```
-python.exe ./src/tests.py -b
+python ./src/tests.py -b
 ```
 
 
