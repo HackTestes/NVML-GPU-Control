@@ -332,9 +332,9 @@ schtasks /create
 
 One of the limitations involve not being able to change the start working directory, so some paths in the scripts might break. Overall, I do not recommend this approach on Windows, users should opt for the GUI method.
 
-#### Linux (systemd)
+#### Linux (systemd / Crontab)
 
-This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so every time the computer starts the control will resume their work.
+This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so every time the computer starts the control will resume their work. It also shows an alternative using crontabs.
 
 ##### Systemd service
 
@@ -365,6 +365,17 @@ Reload service
 sudo systemctl daemon-reload
 ```
 
+##### Crontab (contributed by user on Reddit: [Brockar](https://www.reddit.com/r/wayland/comments/1arjtxj/comment/my4yfio/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button))
+
+1. Edit root's crontab (this ensures that the command will run as root)
+```
+sudo crontab -e 
+``` 
+
+2. Add the command (make the changes you want here)
+```
+@reboot /usr/bin/python3 /usr/bin/User\_NVIDIA\_GPU\_Control/nvml\_gpu\_control.py control-all -n "GPU\_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
+```
 
 ## Security considerations
 
