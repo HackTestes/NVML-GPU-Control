@@ -359,7 +359,7 @@ sudo cp ./linux_config/unofficial-gpu-nvml-control.service /etc/systemd/system/
 sudo systemctl enable --now unofficial-gpu-nvml-control.service
 ```
 
-5. Troubleshoot if needed (get the stdout from the service)
+4. Troubleshoot if needed (get the stdout from the service)
 
 ```bash
 sudo journalctl -u unofficial-gpu-nvml-control.service
