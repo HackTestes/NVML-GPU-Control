@@ -1,8 +1,12 @@
 # See: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
+# See: https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
 
 [project]
 name = "caioh-nvml-gpu-control"
@@ -44,6 +48,3 @@ classifiers = [
 
 [project.urls]
 Repository = "https://github.com/HackTestes/NVML-GPU-Control"
-
-[project.entry-points."nvml_gpu_control.main"]
-nvml-gpu-control = "nvml_gpu_control:main"
