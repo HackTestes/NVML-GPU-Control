@@ -1,0 +1,49 @@
+# See: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "caioh-nvml-gpu-control"
+version = "2025.6.1"
+
+dependencies = [
+  "nvidia-ml-py>=12.570.86"
+]
+
+requires-python = ">=3.8"
+
+authors = [
+  {name = "Caio Gomes Flausino", email = "caio.hacktestes@gmail.com"}
+]
+
+maintainers = [
+  {name = "Caio Gomes Flausino", email = "caio.hacktestes@gmail.com"}
+]
+
+description = "A small program that uses the NVIDIA Management Library to control the GPU independent of OS or display server. This project is not provided or endorsed by NVIDIA"
+readme = "README.md"
+
+license = "GPL-2.0-or-later"
+
+license-files = ["LICENSE*"]
+
+keywords = ["NVIDIA", "gpu", "nvml", "fan control", "power control"]
+
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Environment :: Console",
+
+  # Support is for Linux and Windows
+  "Operating System :: Microsoft",
+  "Operating System :: POSIX :: Linux",
+
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Repository = "https://github.com/HackTestes/NVML-GPU-Control"
+
+[project.entry-points."nvml_gpu_control.main"]
+nvml-gpu-control = "nvml_gpu_control:main"
