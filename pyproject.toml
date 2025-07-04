@@ -5,9 +5,13 @@
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
+# XX.YY.ZZ
+# XX: Breaking changes to the CLI
+# YY: New features that do not break existing features/CLI
+# ZZ: Just code refactor
 [project]
 name = "caioh-nvml-gpu-control"
-version = "2025.6.1"
+version = "1.0.0"
 
 dependencies = [
   "nvidia-ml-py>=12.570.86"
