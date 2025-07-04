@@ -2,8 +2,9 @@ import unittest
 from unittest.mock import Mock
 import sys
 import ctypes
+sys.path.append('./src/caioh_nvml_gpu_control/') # Necessary so the tested files can all find each other from the projects root
 import parse_args
-import caioh_nvml_gpu_control.helper_functions as main_funcs
+import helper_functions as main_funcs
 
 # Test command: python.exe .\tests.py -b
 

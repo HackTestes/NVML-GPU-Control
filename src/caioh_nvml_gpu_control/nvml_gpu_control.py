@@ -1,8 +1,9 @@
 from pynvml import *
 import sys
-import caioh_nvml_gpu_control.helper_functions as main_funcs
-import caioh_nvml_gpu_control.parse_args as parse_args
+import helper_functions as main_funcs
+import parse_args
 import time
+
 
 def main():
     

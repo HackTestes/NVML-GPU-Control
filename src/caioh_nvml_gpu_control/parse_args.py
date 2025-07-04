@@ -1,4 +1,4 @@
-import caioh_nvml_gpu_control.helper_functions as helper_functions
+import helper_functions
 
 class InvalidAction(Exception):
     pass

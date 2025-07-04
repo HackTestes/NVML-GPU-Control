@@ -46,5 +46,6 @@ classifiers = [
 [project.urls]
 Repository = "https://github.com/HackTestes/NVML-GPU-Control"
 
+# caiohack-nvml or chnvml for short
 [project.scripts]
-nvml-gpu-control = "caioh_nvml_gpu_control.nvml_gpu_control:main"
+chnvml = "caioh_nvml_gpu_control.__main__:script_call"
