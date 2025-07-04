@@ -15,9 +15,9 @@ def main():
         return
 
     try:
+
         # Verify driver version
         try:
-
             # Call nvml init and shutdown as an exception (special case), because I need it to restart in a loop later 
             nvmlInit()
             main_funcs.check_driver_version(nvmlSystemGetDriverVersion())
@@ -29,6 +29,7 @@ def main():
         while(True):
             try:
                 # Start nvml (or again in case of errors)
+                # Useful to keep the process running during driver updates
                 nvmlInit()
                 
                 match config.action:

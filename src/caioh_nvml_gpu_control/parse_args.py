@@ -145,7 +145,7 @@ def parse_cmd_args(args):
         raise InvalidAction("The action passed as argument is incorrect")
 
 
-    # You can safely ignore the actions here
+    # You can safely ignore the action here
     i = 2
     while(i < len(args)):
 
