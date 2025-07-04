@@ -9,21 +9,21 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 
 ## Supported hardware
 
-- Any NVIDIA CUDA supported card with a driver higher or equal to version 520 
+* Any NVIDIA CUDA supported card with a driver higher or equal to version 520
 
 ## Dependencies
 
 To use it, you must have installed:
 
-- NVIDIA's proprietary drivers (>= v520)
-- Python 3
-- [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.570.86)
+* NVIDIA's proprietary drivers (>= v520)
+* Python 3
+* [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (current version used: 12.570.86)
 
 > [!NOTE]
 > Your distro may package the nvidia-ml-py, so chek it first
 > Windows path if using admin: `C:\Program Files\Python313\Lib\site-packages`
 
-You will also need **admin/root** privileges to be able to **set the fan speed**. 
+You will also need **admin/root** privileges to be able to **set the fan speed**.
 
 ## Why I am creating this project?
 
@@ -43,14 +43,16 @@ Now that NVIDIA added the functions to work on any CUDA supported card on driver
 Note: you may need to adapt the path of some of the commands
 
 1. Clone the repository
-```
+
+```bash
 git clone https://github.com/HackTestes/NVML-GPU-Control NVML_GPU_Control
 ```
 
 **The next part requires admin/root permissions**
 
 2. Create a new folder for the scripts
-```
+
+```bash
 # Windows
 mkdir 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
@@ -59,7 +61,8 @@ sudo mkdir '/usr/bin/User_NVIDIA_GPU_Control/'
 ```
 
 3. Copy the scripts files from the repository to the new directory
-```
+
+```bash
 # Windows
 cp 'C:\Path_to_the_repository\NVML_GPU_Control\src\*.py' 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
@@ -74,10 +77,11 @@ sudo cp -r /Path_to_the_repository/NVML_GPU_Control/src/*.py /usr/bin/User_NVIDI
 You only need to remove the directory (BE EXTRA CAREFUL WITH THE *RM* COMMAND). You can also use the GUI to simply delete the directory if you find that easier and safer.
 
 Useful docs (read before running the commands):
+
 * [Remove-Item](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/remove-item?view=powershell-7.4)
 * [rm man page](https://man7.org/linux/man-pages/man1/rm.1.html)
 
-```
+```bash
 # Windows - you can run first with the -WhatIf parameter to test 
 Remove-Item -Confirm -Force -Recurse -Path 'C:\Program Files\User_NVIDIA_GPU_Control\'
 
@@ -87,43 +91,48 @@ rm --interactive --preserve-root -R '/usr/bin/User_NVIDIA_GPU_Control'
 
 ## How to use
 
-- Make sure to run with the working directory being the `.\src`
+* Make sure to run with the working directory being the `.\src`
 
-```
+```bash
 cd ./src
 ```
 
 > [!NOTE]
 > The python command on Windows may require the **.exe** at the end (like this "python.exe")
 
-- You must first list all cards that are connected, so you can get the name or UUID
+* You must first list all cards that are connected, so you can get the name or UUID
 
-```
+```bash
 python ./nvml_gpu_control.py list
 ```
 
-- Then you can select a target by name
-```
+* Then you can select a target by name
+
+```bash
 python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080'
 ```
 
-- Or by UUID
-```
+* Or by UUID
+
+```bash
 python ./nvml_gpu_control.py fan-control -id GPU-00000000-0000-0000-0000-000000000000
 ```
 
-- And the fan speed for each temperature level (requires admin)
-```
+* And the fan speed for each temperature level (requires admin)
+
+```bash
 sudo python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
-- You could also use the `--dry-run` for testing! (no admin)
-```
+* You could also use the `--dry-run` for testing! (no admin)
+
+```bash
 python ./nvml_gpu_control.py fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
-- You can also revert to the original state
-```
+* You can also revert to the original state
+
+```bash
 python ./nvml_gpu_control.py fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
 ```
 
@@ -236,7 +245,6 @@ OPTIONS
 python ./src/tests.py -b
 ```
 
-
 ### Setting up services or tasks
 
 This section will present some simple commands to setup services or tasks that start as admin and run the configured program with the configured settings. You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID in Linux).
@@ -245,8 +253,8 @@ This section will present some simple commands to setup services or tasks that s
 
 Please, check Microsoft's documentation:
 
-- [Task scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page)
-- [Task scheduler command line](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks)
+* [Task scheduler](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page)
+* [Task scheduler command line](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks)
 
 Since this program does not implement the service API, it will be using scheduled tasks to run at startup. There will be presented a GUI and a command line guide to how to do the setup:
 
@@ -277,7 +285,7 @@ Since this program does not implement the service API, it will be using schedule
 ![TaskScheduler_TriggersTab](img/TaskScheduler_TriggersTab.png)
 ![TaskScheduler_TriggersTab_2](img/TaskScheduler_TriggersTab_2.png)
 
-10. Actions tab -> Create a new action and select the `action` `Start a program` 
+10. Actions tab -> Create a new action and select the `action` `Start a program`
 
 11. Actions tab -> In the `Program/script` put the path of the python executable. This guide wil use `"C:\Program Files\Python312\python.exe"` (Note that some python versions may have a different directory name and make sure only admin users can change the executable and the folder) - the double quotes are necessary
 
@@ -306,7 +314,6 @@ or
 18. Settings tab -> In the `If the task is already running, then the following rule applies`, select the `Do not start a new instance`
 
 ![TaskScheduler_SettingsTab](img/TaskScheduler_SettingsTab.png)
-
 
 ##### Command line (Not recommended and untested)
 
@@ -341,39 +348,40 @@ This section will show how to install a global (system wide) systemd service in 
 1. Take a look at the systemd service at `linux_config/unofficial-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration (Note: you can use the UUID as well).
 
 2. Copy the unit file into `/etc/systemd/system/` (needs root)
-```
+
+```bash
 sudo cp ./linux_config/unofficial-gpu-nvml-control.service /etc/systemd/system/
 ```
 
 3. Enable the service (needs root)
-```
-sudo systemctl enable unofficial-gpu-nvml-control.service
+
+```bash
+sudo systemctl enable --now unofficial-gpu-nvml-control.service
 ```
 
-4. Start the service (needs root)
-```
-sudo systemctl start unofficial-gpu-nvml-control.service
-```
+4. Troubleshoot if needed (get the stdout from the service)
 
-5. Troubleshoot if needed (get the stdout from the service)
-```
+```bash
 sudo journalctl -u unofficial-gpu-nvml-control.service
 ```
 
-Reload service
-```
+Reload systemd daemon
+
+```bash
 sudo systemctl daemon-reload
 ```
 
 ##### Crontab (contributed by user on Reddit: [Brockar](https://www.reddit.com/r/wayland/comments/1arjtxj/comment/my4yfio/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) / [@brockar](https://github.com/brockar)
 
 1. Edit root's crontab (this ensures that the command will run as root)
-```
+
+```bash
 sudo crontab -e
 ```
 
 2. Add the command (make the changes you want here)
-```
+
+```bash
 @reboot /usr/bin/python3 /usr/bin/User_NVIDIA_GPU_Control/nvml_gpu_control.py control-all -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
 ```
 
@@ -389,7 +397,6 @@ sudo crontab -e
 
       The scripts and the executables can only be written by admin users, otherwise, another program may overwrite them and gain admin rights on the machine. Please, verify the permissions set on the python executable and on the scripts (this also applies to the library nvidia-ml-py).
 
-
 ### Linux
 
 1. Having an admin prompt under the same desktop (X11)
@@ -404,31 +411,22 @@ sudo crontab -e
 
 ### Must have
 
-- [x] Fan control
-
-- [x] Select GPU by name
-
-- [x] Display fan speed per controller
-
-- [x] Control fan policy
-
-- [x] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
-
-- [ ] Run at startup with necessary permissions (Windows and Linux) - Windows already works
-
-- [x] Power limit control
-
-- [x] Temperature threshold control
-
-- [x] Enable all controls
-
-- [x] Help action must not require NVML initialization
+* [x] Fan control
+* [x] Select GPU by name
+* [x] Display fan speed per controller
+* [x] Control fan policy
+* [x] Select GPU by UUID (allows users to control more than 1 GPU individually that shares the same model - e.g. 2 RTXs 4080)
+* [x] Run at startup with necessary permissions (Windows and Linux) - Windows already works
+* [x] Power limit control
+* [x] Temperature threshold control
+* [x] Enable all controls
+* [x] Help action must not require NVML initialization
 
 ### Can consider (nice to have)
 
-- [ ] Logging to file option (with message size limit) -> user can spawn another instance with the same arguments and pass the `--dry-run` option as it should mirror the output of the privileged one
+* [ ] Logging to file option (with message size limit) -> user can spawn another instance with the same arguments and pass the `--dry-run` option as it should mirror the output of the privileged one
 
-- [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unnecessary as users can generate all speed points elsewhere and just pass it as arguments
+* [ ] Temperature curves (linear, quadratic, logarithmic...) -> might be unnecessary as users can generate all speed points elsewhere and just pass it as arguments
 
 ## Support
 
@@ -440,12 +438,12 @@ If I loose the need for this software (aka change my hardware), I will make sure
 
 Just a few guidelines and style decisions:
 
-- variable_name
+* variable_name
 
-- function_name
+* function_name
 
-- ObjectOrClassName
+* ObjectOrClassName
 
-- Other dependencies are DISALLOWED, I want to limit the dependencies as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
+* Other dependencies are DISALLOWED, I want to limit the dependencies as a security measure (just remember the xz incident). You are free to try to convince me, but your contribution will most likely be rejected
 
-- Code should be testable, so please include unit tests to your code. If you think that certain parts are just too hard to make tests, include a justification
+* Code should be testable, so please include unit tests to your code. If you think that certain parts are just too hard to make tests, include a justification
