@@ -1,17 +1,15 @@
-# Linux boot services
+# Linux startup services
 
-## Setting up boot services or tasks
+## Setting up startup services
 
 > [!CAUTION]
 > You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID on Linux with this program)
 
-This section will present some simple commands to setup services or tasks that start as admin and run the configured program with the configured settings.
+This section will present some simple commands to setup services that start as root and run the program with the configured settings.
 
-### Linux (systemd / Crontab)
+### Systemd service
 
-This section will show how to install a global (system wide) systemd service in Ubuntu and enable it, so every time the computer starts the control will resume their work. It also shows an alternative using crontabs.
-
-#### Systemd service
+The next steps will show how to install a global (system wide) systemd service and enable it. Such steps were only tested on a Ubuntu machine.
 
 1. Take a look at the systemd service at `linux_config/caioh-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration (Note: you can use the UUID as well).
 
@@ -39,7 +37,13 @@ Reload systemd daemon
 sudo systemctl daemon-reload
 ```
 
-#### Crontab (contributed by user on Reddit: [Brockar](https://www.reddit.com/r/wayland/comments/1arjtxj/comment/my4yfio/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) / [@brockar](https://github.com/brockar))
+To remove the service, you only need to delete the file
+
+```bash
+sudo rm -i /etc/systemd/system/caioh-gpu-nvml-control.service
+```
+
+### Crontab (contributed by user on Reddit: [Brockar](https://www.reddit.com/r/wayland/comments/1arjtxj/comment/my4yfio/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) / [@brockar](https://github.com/brockar))
 
 1. Edit root's crontab (this ensures that the command will run as root)
 

@@ -19,11 +19,7 @@ To use it, you must have installed:
 * Python 3
 * [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (NVIDIA's official python bindings)
 
-> [!NOTE]
-> Your distro may package the nvidia-ml-py, so chek it first
-> Windows path if using admin: `C:\Program Files\Python313\Lib\site-packages`
-
-You will also need **admin/root** privileges to be able to **set the settings**.
+You will also need **admin/root** privileges to be able to **set anything**. Query can be done by unprivileged users however.
 
 ## Why I am creating this project?
 
@@ -113,7 +109,7 @@ pip uninstall --user caioh-nvml-gpu-control
 > The python command on Windows may require the **.exe** at the end (like this "python.exe")
 
 > [!TIP]
-> You can start the scripts with `chnvml` if the scripts directory is in the PATH or use `python -m caioh_nvml_gpu_control`.
+> You can start the program with `chnvml` if the Scripts directory is in the PATH or use `python -m caioh_nvml_gpu_control`.
 
 * You must first list all cards that are connected, so you can get the name or UUID
 
