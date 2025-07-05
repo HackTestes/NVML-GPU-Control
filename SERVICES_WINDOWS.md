@@ -20,7 +20,7 @@ Since this program does not implement the service API, it will be using schedule
 
 * In an administrator prompt, run the following command
 ```cmd
-schtasks /create /xml "C:\path\to\task\file\User NVIDIA GPU Control Task.xml"
+schtasks /create /xml "C:\path\to\task\file\User NVIDIA GPU Control Task.xml" /tn "CaioH NVIDIA GPU Control"
 ```
 
 * Or you can use the GUI interface and import the xml (also needs to be running as admin)
