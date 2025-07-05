@@ -63,7 +63,10 @@ pip install caioh-nvml-gpu-control
 
 ### Linux
 
-Install the package with pip running as root and store it in root's home directory (needed for startup services)
+> [!TIP]
+> Packages are installed with the `--user` option because the dependencies all get isolated in user's home directory, so you won't need to depend on the distro's provided ones (if they even distribute them).
+
+Install the package with pip running as root and store it in root's home directory (needed for startup services).
 
 ```bash
 sudo pip install --user caioh-nvml-gpu-control
@@ -282,6 +285,6 @@ See [DEVELOPMENT](DEVELOPMENT.md) for guindance about development or contributio
 
 ## Support
 
-I will be supporting this program as long as I have NVIDIA GPUs (especially because I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful (note that the focus is energy and temperature control to increase **stability**). You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
+I will be supporting this program as long as I have NVIDIA GPUs (especially because I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful. You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
 
 If I loose the need for this software (aka change my hardware), I will make sure to update this notice.
