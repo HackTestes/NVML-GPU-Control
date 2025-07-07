@@ -39,7 +39,7 @@ Version number scheme: XX.YY.ZZ
 
 * ObjectOrClassName
 
-## Submitting code rules
+## Rules for submitting code
 
 When submmiting code to this project, pay attention to some rules:
 
