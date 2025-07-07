@@ -55,7 +55,7 @@ Screenshots: [NVIDIA NVML change logs 515](img/NVIDIA_NVML_change_logs_515.jpeg)
 
 ### Windows
 
-Install the package with pip running as **admin** to make it system wide (needed for startup services)
+Install the package with [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/) running as **admin** to make it system wide (needed for startup services)
 
 ```bash
 pip install caioh-nvml-gpu-control
@@ -63,23 +63,14 @@ pip install caioh-nvml-gpu-control
 
 ### Linux
 
-> [!TIP]
-> Packages are installed with the `--user` option because the dependencies all get isolated in user's home directory, so you won't need to depend on the distro's provided ones (if they even distribute them).
-
-Install the package with pip running as root and store it in root's home directory (needed for startup services).
+Install the package with [pipx](https://github.com/pypa/pipx) running as root, so it can be installed system-wide (needed for startup services).
 
 ```bash
-sudo pip install --user caioh-nvml-gpu-control
-```
-
-And install it for each user if desired
-
-```bash
-pip install --user caioh-nvml-gpu-control
+sudo pipx install --global caioh-nvml-gpu-control
 ```
 
 > [!WARNING]
-> Files must be writable only to admin/root, otherwise unprivileged programs may escalate provileges with the startup services
+> Files must be writable only to admin/root, otherwise unprivileged programs may escalate provileges with the startup services. If you followed the steps, this should be done already 
 
 ## Uninstall
 
@@ -88,7 +79,7 @@ pip install --user caioh-nvml-gpu-control
 
 ### Windows
 
-Uninstall the package by running the next command as **admin**
+Uninstall the package by running [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/) as **admin**
 
 ```bash
 pip uninstall caioh-nvml-gpu-control
@@ -96,15 +87,11 @@ pip uninstall caioh-nvml-gpu-control
 
 ### Linux
 
-Uninstall the package by running the next command as **root** or for each user
+Uninstall the package by running [pipx](https://github.com/pypa/pipx) command as **root**
 
 ```bash
-sudo pip uninstall --user caioh-nvml-gpu-control
-
-# Or for user packages
-pip uninstall --user caioh-nvml-gpu-control
+sudo pipx uninstall --global caioh-nvml-gpu-control
 ```
-
 
 ## How to use
 

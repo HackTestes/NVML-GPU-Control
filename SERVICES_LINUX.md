@@ -54,5 +54,5 @@ sudo crontab -e
 2. Add the command (make the changes you want here)
 
 ```bash
-@reboot /usr/bin/python3 -m caioh_nvml_gpu_control -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
+@reboot chnvml -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
 ```
