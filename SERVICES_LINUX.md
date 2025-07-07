@@ -31,6 +31,18 @@ sudo systemctl enable --now caioh-gpu-nvml-control.service
 sudo journalctl -u caioh-gpu-nvml-control.service
 ```
 
+Restart the service
+
+```bash
+sudo systemctl restart caioh-gpu-nvml-control.service
+```
+
+Reload the service
+
+```bash
+sudo systemctl reload caioh-gpu-nvml-control.service
+```
+
 Reload systemd daemon
 
 ```bash
