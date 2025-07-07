@@ -63,7 +63,7 @@ pip install caioh-nvml-gpu-control
 
 ### Linux
 
-Install the package with [pipx](https://github.com/pypa/pipx) running as root, so it can be installed system-wide (needed for startup services).
+Install the package with [pipx](https://github.com/pypa/pipx) running as root, so it can be [installed system-wide](https://pipx.pypa.io/stable/installation/#-global-argument) (needed for startup services).
 
 ```bash
 sudo pipx install --global caioh-nvml-gpu-control
