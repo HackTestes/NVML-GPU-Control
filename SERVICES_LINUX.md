@@ -11,7 +11,7 @@ This section will present some simple commands to setup services that start as r
 
 The next steps will show how to install a global (system wide) systemd service and enable it. Such steps were only tested on a Ubuntu machine.
 
-1. Take a look at the systemd service at `linux_config/caioh-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration (Note: you can use the UUID as well).
+1. Take a look at the systemd service at `linux_config/caioh-gpu-nvml-control.service`. Change the GPU name and the settings to the desired configuration at the [ExecStart](linux_config/caioh-gpu-nvml-control.service#L9).
 
 2. Copy the unit file into `/etc/systemd/system/` (needs root)
 

@@ -16,7 +16,7 @@ Since this program does not implement the service API, it will be using schedule
 
 ### Import and edit the task
 
-Take a look at the [xml task file](/windows_config/User%20NVIDIA%20GPU%20Control%20Task.xml) and make the necessary changes in the [Arguments](https://github.com/HackTestes/NVML-GPU-Control/blob/packaging/windows_config/User%20NVIDIA%20GPU%20Control%20Task.xml#L44)
+Take a look at the [xml task file](windows_config/User%20NVIDIA%20GPU%20Control%20Task.xml) and make the necessary changes in the [Arguments](windows_config/User%20NVIDIA%20GPU%20Control%20Task.xml#L44)
 
 In an administrator prompt, run the following command
 
