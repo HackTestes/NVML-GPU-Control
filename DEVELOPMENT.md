@@ -21,6 +21,18 @@ pip install .
 python ./tests/test_nvml.py -b
 ```
 
+## Build
+
+```bash
+python -m build
+```
+
+## Upload to Pypi
+
+```bash
+python -m twine upload dist/*
+```
+
 ## Versioning
 
 Version number scheme: XX.YY.ZZ.WW
