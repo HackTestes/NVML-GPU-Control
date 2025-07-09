@@ -5,13 +5,14 @@
 requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
-# XX.YY.ZZ
+# XX.YY.ZZ.WW
 # XX: Breaking changes to the CLI
 # YY: New features that do not break existing features/CLI
 # ZZ: Just code refactor
+# WW: Dependency version bump
 [project]
 name = "caioh-nvml-gpu-control"
-version = "1.0.0"
+version = "1.0.0.0"
 
 dependencies = [
   "nvidia-ml-py>=12.570.86"
@@ -28,7 +29,7 @@ maintainers = [
 ]
 
 description = "A small program that uses the NVIDIA Management Library to control the GPU independent of OS or display server. This project is not provided or endorsed by NVIDIA"
-readme = "README.md"
+readme = "README_PYPI.md"
 
 license = "GPL-2.0-or-later"
 
@@ -37,7 +38,7 @@ license-files = ["LICENSE*"]
 keywords = ["NVIDIA", "gpu", "nvml", "fan control", "power control"]
 
 classifiers = [
-  "Development Status :: 1 - Planning",
+  "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
 
   # Support is for Linux and Windows

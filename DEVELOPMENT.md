@@ -23,13 +23,15 @@ python ./tests/test_nvml.py -b
 
 ## Versioning
 
-Version number scheme: XX.YY.ZZ
+Version number scheme: XX.YY.ZZ.WW
 
 * XX: represent breaking changes to the CLI interface. Since users rely on their scripts working correctly and this is the public interface, I will consider it the same as breaking API changes. 
 
 * YY: represents new features that do not break existing ones (otherwise it would be XX).
 
 * ZZ: representes changes that don't break anything. It could be a code refactor or new comments.
+
+* WW: represents simple version bumps on the pynvml dependency
 
 ## Code style
 
