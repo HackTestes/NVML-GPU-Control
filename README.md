@@ -2,6 +2,21 @@
 
 This is a small program that uses the NVIDIA Management Library (NVML) to monitor GPU temperature and set fan speed. NVML is being used, because it is OS and display sever agnostic (that means it doesn't depend on X11 or Windows). Another important reason is that the official NVIDIA tool (NVIDIA smi) does not currently support fan control.
 
+<!--toc:start-->
+- [NVML GPU Control](#nvml-gpu-control)
+  - [Disclaimer](#disclaimer)
+  - [Supported hardware](#supported-hardware)
+  - [Dependencies](#dependencies)
+  - [Why I am creating this project?](#why-i-am-creating-this-project)
+  - [Installation](#installation)
+  - [Uninstall](#uninstall)
+  - [How to use](#how-to-use)
+  - [Startup services](#startup-services)
+  - [Security considerations](#security-considerations)
+  - [Development](#development)
+  - [Support](#support)
+<!--toc:end-->
+
 ## Disclaimer
 
 * This project is NOT endorsed or sponsored by NVIDIA
