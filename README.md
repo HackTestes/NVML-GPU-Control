@@ -20,7 +20,7 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 ## Disclaimer
 
 * This project is NOT endorsed or sponsored by NVIDIA
-* This project is independent
+* This project is independent and not affiliated to NVIDIA
 
 ## Supported hardware
 
@@ -67,6 +67,8 @@ Added nvmlDeviceGetMinMaxFanSpeed API to report the min and max fan speed that u
 Screenshots: [NVIDIA NVML change logs 515](img/NVIDIA_NVML_change_logs_515.jpeg), [NVIDIA NVML change logs 520](img/NVIDIA_NVML_change_logs_520.jpeg)
 
 ## Installation
+
+See PyPI page: https://pypi.org/project/caioh-nvml-gpu-control/
 
 ### Windows
 
