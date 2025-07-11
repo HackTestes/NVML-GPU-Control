@@ -5,7 +5,7 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 ## Disclaimer
 
 * This project is NOT endorsed or sponsored by NVIDIA
-* This project is independent
+* This project is independent and not affiliated to NVIDIA
 
 ## Supported hardware
 
