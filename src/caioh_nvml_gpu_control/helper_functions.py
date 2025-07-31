@@ -2,6 +2,7 @@ import pynvml
 import datetime
 import time
 import ctypes
+import sys
 
 output_separator = '==============================================='
 
@@ -39,6 +40,9 @@ def check_driver_version(driver_version_str):
 
 def log_helper(msg):
     print(f'LOG[{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}]: {msg}')
+
+def error_print(msg):
+    print(f'{msg}', file=sys.stderr)
 
 def print_help():
     help_text = '''
@@ -116,6 +120,9 @@ OPTIONS
 
     --single-use OR -su
           Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
+
+    --verbose OR -V
+          When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
 
 '''
     print(help_text)
@@ -233,12 +240,17 @@ def fan_control_subroutine(gpu_handle, configuration):
     current_temp = pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)
     current_speed = pynvml.nvmlDeviceGetFanSpeed(gpu_handle)
 
-    log_helper(f'Current temp: {current_temp}°C')
-    log_helper(f'Current speed: {current_speed}%') # Monitor for fan fan speed changes and reajust! 
+    # Assume at first that it did change
+    setting_changed = True
+
+    log_msg = []
+
+    log_msg.append(f'Current temp: {current_temp}°C')
+    log_msg.append(f'Current speed: {current_speed}%') # Monitor for fan fan speed changes and reajust! 
 
     # Get the fan speed per controller
     for idx, fan_speed_c in enumerate(get_gpu_fan_speed_per_controller(gpu_handle)):
-        log_helper(f'Fan controller speed {idx}: {fan_speed_c}%')
+        log_msg.append(f'Fan controller speed {idx}: {fan_speed_c}%')
 
     for pair in configuration.temp_speed_pair:
 
@@ -248,9 +260,15 @@ def fan_control_subroutine(gpu_handle, configuration):
             # Only send commands to the GPU if necessary (if the current setting is different from the targeted one)
             if current_speed != pair.speed:
                 set_gpu_fan_speed(gpu_handle, pair.speed, configuration.dry_run)
-                log_helper(f'Setting GPU fan speed: {pair.speed}%')
+                log_msg.append(f'Setting GPU fan speed: {pair.speed}%')
+                setting_changed = True # Setting it again for safety
             else:
-                log_helper(f'Same as previous speed, nothing to do!')
+                log_msg.append(f'Same as previous speed, nothing to do!')
+                setting_changed = False
+
+            # Only print log messages when necessary to avoid taking too much disk space
+            if configuration.verbose == True or setting_changed == True:
+                log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
 
             # Match found and set, return now
             return
@@ -357,23 +375,32 @@ def print_power_limit_info(configuration):
     print(f'Current enforced power limit: {current_enforced_pl}W\n')
     print(f'{output_separator}')
 
-def power_control_subroutine(gpu_handle, target_power_limit, dry_run):
+def power_control_subroutine(gpu_handle, target_power_limit, dry_run, verbose):
     power_limit_constraints_watts = get_power_limit_constraints_watts(gpu_handle)
     current_pl = get_current_power_limit_watts(gpu_handle)
     current_enforced_pl = get_enforced_power_limit_watts(gpu_handle)
 
-    log_helper(f'Current power limit: {current_pl}W')
-    log_helper(f'Current enforced power limit: {current_enforced_pl}W')
+    setting_changed = True
+    log_msg = []
+
+    log_msg.append(f'Current power limit: {current_pl}W')
+    log_msg.append(f'Current enforced power limit: {current_enforced_pl}W')
 
     if target_power_limit < power_limit_constraints_watts.min or target_power_limit > power_limit_constraints_watts.max:
-        log_helper(f'WARNING: trying to set power limit outside of the min({power_limit_constraints_watts.min}W) and max({power_limit_constraints_watts.max}W) range')
+        log_msg.append(f'WARNING: trying to set power limit outside of the min({power_limit_constraints_watts.min}W) and max({power_limit_constraints_watts.max}W) range')
 
     if target_power_limit != current_pl or target_power_limit != current_enforced_pl:
         set_power_limit(gpu_handle, target_power_limit, dry_run)
-        log_helper(f'Setting the power limit: {target_power_limit}W')
+        log_msg.append(f'Setting the power limit: {target_power_limit}W')
+        setting_changed = True
 
     else:
-        log_helper(f'Nothing to do, current and enforced power limit is the same as the target')
+        log_msg.append(f'Nothing to do, current and enforced power limit is the same as the target')
+        setting_changed = False
+
+    # Only print log messages when necessary to avoid taking too much disk space
+    if verbose == True or setting_changed == True:
+        log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
     
 
 def power_control(configuration):
@@ -381,7 +408,7 @@ def power_control(configuration):
     print_GPU_info(gpu_handle)
 
     while(True):
-        power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run)
+        power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run, configuration.verbose)
 
         if configuration.single_use == True:
             break
@@ -451,21 +478,30 @@ def print_thresholds_info(configuration):
     print(f'Temperature threshold - maximum acoustic: {temperarure_thresholds.max_acoustic}°C')
     print(f'{output_separator}')
 
-def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run):
+def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run, verbose):
 
     current_temp_thresholds = get_temperarure_thresholds(gpu_handle)
 
-    log_helper(f'Current acoustic threshold: {current_temp_thresholds.current_acoustic}°C')
+    setting_changed = True
+    log_msg = []
+
+    log_msg.append(f'Current acoustic threshold: {current_temp_thresholds.current_acoustic}°C')
 
     if target_acoustic_temp_limit < current_temp_thresholds.min_acoustic or target_acoustic_temp_limit > current_temp_thresholds.max_acoustic:
-        log_helper(f'WARNING: trying to set acoustic threshold outside of the min({current_temp_thresholds.min_acoustic}°C) and max({current_temp_thresholds.max_acoustic}°C) range')
+        log_msg.append(f'WARNING: trying to set acoustic threshold outside of the min({current_temp_thresholds.min_acoustic}°C) and max({current_temp_thresholds.max_acoustic}°C) range')
 
     if target_acoustic_temp_limit != current_temp_thresholds.current_acoustic:
         set_temperature_thresholds(gpu_handle, pynvml.NVML_TEMPERATURE_THRESHOLD_ACOUSTIC_CURR, target_acoustic_temp_limit, dry_run)
-        log_helper(f'Setting acoustic temperature threshold: {target_acoustic_temp_limit}°C')
+        log_msg.append(f'Setting acoustic temperature threshold: {target_acoustic_temp_limit}°C')
+        setting_changed = True
     
     else:
-        log_helper(f'Nothing to do, current temperature threshold is the same as the target')
+        log_msg.append(f'Nothing to do, current temperature threshold is the same as the target')
+        setting_changed = False
+
+    # Only print log messages when necessary to avoid taking too much disk space
+    if verbose == True or setting_changed == True:
+        log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
 
 
 def temp_control(configuration):
@@ -474,7 +510,7 @@ def temp_control(configuration):
     print_GPU_info(gpu_handle)
 
     while(True):
-        temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run)
+        temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run, configuration.verbose)
 
         if configuration.single_use == True:
             break
@@ -491,11 +527,11 @@ def control_all(configuration):
 
         # If this settings is different than the default, the user has enabled it
         if configuration.power_limit != 0:
-            power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run)
+            power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run, configuration.verbose)
 
         # If this settings is different than the default, the user has enabled it
         if configuration.acoustic_temp_limit != 0:
-            temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run)
+            temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run, configuration.verbose)
 
         fan_control_subroutine(gpu_handle, configuration)
 

@@ -1,4 +1,5 @@
 import helper_functions
+from helper_functions import error_print
 
 class InvalidAction(Exception):
     pass
@@ -40,6 +41,7 @@ class Configuration:
         self.single_use = False
         self.acoustic_temp_limit = 0 # The user must set the value
         self.power_limit = 0 # The user must set the value
+        self.verbose = False # Omit log messages by default
 
 class TempSpeedPair:
 
@@ -69,25 +71,25 @@ def validate_config(config):
 
     # At least one of the target setting must be configured
     if config.gpu_name == '' and config.gpu_uuid == '':
-        print("You did not select a target GPU")
+        error_print("You did not select a target GPU")
         raise InvalidConfig("No GPU was selected")
 
     # fan-policy needs a mode
     if config.action == 'fan-policy':
         if config.fan_policy == '':
-            print("You did not select a fan policy: autmatic or manual")
+            error_print("You did not select a fan policy: autmatic or manual")
             raise InvalidConfig("No fan policy was selected")
 
     # power-control needs a power limit configuration
     if config.action == 'power-control':
         if config.power_limit == 0:
-            print("You did not select a power limit")
+            error_print("You did not select a power limit")
             raise InvalidConfig("No power limit was selected")
 
     # temp-control needs a power limit configuration
     if config.action == 'temp-control':
         if config.acoustic_temp_limit == 0:
-            print("You did not select a temperature limit")
+            error_print("You did not select a temperature limit")
             raise InvalidConfig("No temperature limit was selected")
 
 
@@ -96,7 +98,8 @@ def parse_cmd_args(args):
     configuration = Configuration()
 
     if len(args) == 1:
-        print(f'You must pass more arguments')
+        helper_functions.print_help()
+        error_print(f'You must pass more arguments')
         raise InsufficientArgs("No action was supplied")
 
     # You can always ignore the first argument, since it is the program itself
@@ -169,19 +172,19 @@ def parse_cmd_args(args):
                 speed_pair = speed_pair_str.split(':')
 
                 if (len(speed_pair) != 2):
-                    print('Invalid number of speed pair parameters')
+                    error_print('Invalid number of speed pair parameters')
                     raise InvalidNumberSpeedPairParams("You can only set temperature and target speed at a time")
 
                 temp = int(speed_pair[0])
                 speed = int(speed_pair[1])
 
                 if (speed > 100):
-                    print(f'The fan speed only goes up to 100%. You choose {speed}')
-                    raise InvalidFanSpeed(f'The fan speed only goes up to 100%. You choose {speed}')
+                    error_print(f'The fan speed only goes up to 100%. You chose {speed}')
+                    raise InvalidFanSpeed(f'The fan speed only goes up to 100%. You chose {speed}')
 
                 if (speed < 0):
-                    print(f'The fan speed cannot be lower than 0%. You choose {speed}')
-                    raise InvalidFanSpeed(f'The fan speed cannot be lower than 0%. You choose {speed}')
+                    error_print(f'The fan speed cannot be lower than 0%. You chose {speed}')
+                    raise InvalidFanSpeed(f'The fan speed cannot be lower than 0%. You chose {speed}')
 
                 configuration.temp_speed_pair.append( TempSpeedPair(temp, speed) )
 
@@ -197,7 +200,7 @@ def parse_cmd_args(args):
 
             # Refuse to continue with negative time values
             if configuration.time_interval < 0:
-                print("You cannot use negative time values for intervals")
+                error_print("You cannot use negative time values for intervals")
                 raise InvalidTimeParameter("Invalid time parameter")
 
         elif (arg == '--retry-interval' or arg == '-ri'):
@@ -206,11 +209,14 @@ def parse_cmd_args(args):
 
             # Refuse to continue with negative time values
             if configuration.retry_interval_s < 0:
-                print("You cannot use negative time values for intervals")
+                error_print("You cannot use negative time values for intervals")
                 raise InvalidTimeParameter("Invalid time parameter")
 
         elif (arg == '--dry-run' or arg == '-dr'):
             configuration.dry_run = True
+
+        elif (arg == '--verbose' or arg == '-V'):
+            configuration.verbose = True
 
         # For the fan-policy action
         elif (arg == '--auto'):
@@ -232,7 +238,7 @@ def parse_cmd_args(args):
 
         else:
             helper_functions.print_help()
-            print(f'Invalid option: {arg}\n\n')
+            error_print(f'Invalid option: {arg}\n\n')
             raise InvalidOption('The option given was invalid')
 
         # Change iteration

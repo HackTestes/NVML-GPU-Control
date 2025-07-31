@@ -239,6 +239,13 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--manual'])
         self.assertEqual( config.fan_policy, 'manual')
 
+    def test_parse_args_verbose(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control','-n', 'RTX 3080', '--verbose'])
+        self.assertEqual(config.verbose, True)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'fan-control', '-n', 'RTX 3080', '-V'])
+        self.assertEqual(config.verbose, True)
+
     def test_parse_args_invalid_option(self):
 
         with self.assertRaises(parse_args.InvalidOption):

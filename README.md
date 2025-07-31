@@ -255,6 +255,9 @@ OPTIONS
     --single-use OR -su
           Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
 
+    --verbose OR -V
+          When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
+
 ```
 
 ## Startup services
