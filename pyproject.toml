@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 # WW: Dependency version bump
 [project]
 name = "caioh-nvml-gpu-control"
-version = "1.0.0.0"
+version = "1.1.0.0"
 
 dependencies = [
   "nvidia-ml-py>=12.570.86"
