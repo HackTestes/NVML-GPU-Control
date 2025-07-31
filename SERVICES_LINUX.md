@@ -25,11 +25,14 @@ sudo cp ./linux_config/caioh-gpu-nvml-control.service /etc/systemd/system/
 sudo systemctl enable --now caioh-gpu-nvml-control.service
 ```
 
-4. Troubleshoot if needed (get the stdout from the service)
+4. Troubleshoot if needed (get the stdout from the service).
 
 ```bash
 sudo journalctl -u caioh-gpu-nvml-control.service
 ```
+
+> [!TIP]
+> You can also remove logs (but keep the erros) by redirecting the stdout, so messages take less space in disk. You just need to add the `StandardOutput=/dev/null` line to the [service file](linux_config/caioh-gpu-nvml-control.service).
 
 Restart the service
 
