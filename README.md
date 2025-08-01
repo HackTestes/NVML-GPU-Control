@@ -113,7 +113,7 @@ sudo pipx uninstall --global caioh-nvml-gpu-control
 ## How to use
 
 > [!NOTE]
-> The python command on Windows may require the **.exe** at the end (like this "python.exe")
+> Some commands require admin/root privileges to run, so run it with something like `sudo` (Linux) or in an admin prompt (Windows). Services already run with the highest privileges, so there is no need to prefix the command with `sudo`.
 
 > [!TIP]
 > You can start the program with `chnvml` if the Scripts directory is in the PATH or use `python -m caioh_nvml_gpu_control`.
@@ -127,22 +127,22 @@ chnvml list
 * Then you can select a target by name
 
 ```bash
-chnvml fan-control -n 'NVIDIA GeForce RTX 4080'
+sudo chnvml fan-control -n 'NVIDIA GeForce RTX 4080'
 ```
 
 * Or by UUID
 
 ```bash
-chnvml fan-control -id GPU-00000000-0000-0000-0000-000000000000
+sudo chnvml fan-control -id GPU-00000000-0000-0000-0000-000000000000
 ```
 
-* And the fan speed for each temperature level (requires admin)
+* And the fan speed for each temperature level (**requires admin or root**)
 
 ```bash
 sudo chnvml fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
 ```
 
-* You could also use the `--dry-run` for testing! (no admin or root)
+* You could also use the `--dry-run` for testing! (**no** admin or root)
 
 ```bash
 chnvml fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
@@ -151,7 +151,7 @@ chnvml fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' -
 * You can also revert to the original fan state by runnig the following command or *rebooting the machine*
 
 ```bash
-chnvml fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
+sudo chnvml fan-policy --auto -n 'NVIDIA GeForce RTX 4080'
 ```
 
 Note that it does not current support fan curve (or linear progression), so it works on levels. Each level the temperature is verified against the configuration (higher or equal) and then set properly. Also, each temperature associated with speed is ordered automatically. (think of it as a staircase graph)
