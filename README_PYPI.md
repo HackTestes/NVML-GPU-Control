@@ -208,3 +208,27 @@ OPTIONS
           The program closes when it encounters an error. Useful when you want the service manager to restart the process instead of letting the program recover
 
 ```
+
+## Changelog
+
+### 1.0.0.0
+
+* Initial pypi release
+
+### 1.1.0.0
+
+* Added a new option: --verbose OR -V
+
+### 2.0.0.0
+
+* Actions removed: `fan-control`, `power-control`, `temp-control`
+
+* Action renamed: `control-all` -> `control`
+
+* Quality of life
+    * More information on initial log
+    * Some options aren't automatically ignored anymore
+
+### 2.1.0.0
+
+* Added a new option: `--close-on-error OR -coe`
