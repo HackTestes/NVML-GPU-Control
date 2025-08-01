@@ -42,6 +42,7 @@ class Configuration:
         self.acoustic_temp_limit = 0 # The user must set the value
         self.power_limit = 0 # The user must set the value
         self.verbose = False # Omit log messages by default
+        self.close_on_error = False # Let the service manaer restart the process instead
 
 class TempSpeedPair:
 
@@ -212,6 +213,9 @@ def parse_cmd_args(args):
 
         elif (arg == '--verbose' or arg == '-V'):
             configuration.verbose = True
+
+        elif (arg == '--close-on-error' or arg == '-coe'):
+            configuration.close_on_error = True
 
         # For the fan-policy action
         elif (arg == '--auto'):

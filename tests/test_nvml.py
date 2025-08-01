@@ -227,7 +227,7 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'fan-policy', '--name', 'RTX 4080', '--manual'])
         self.assertEqual( config.fan_policy, 'manual')
 
-    def test_parse_args_verbose(self):
+    def test_parse_args_option_verbose(self):
         config = parse_args.parse_cmd_args(['.python_script', 'control','-n', 'RTX 3080', '--verbose', '-sp', '0:50'])
         self.assertEqual(config.verbose, True)
 
@@ -236,6 +236,16 @@ class TestMethods(unittest.TestCase):
 
         config = parse_args.parse_cmd_args(['.python_script', 'control', '-n', 'RTX 3080', '-sp', '0:50'])
         self.assertEqual(config.verbose, False)
+
+    def test_parse_args_option_close_on_error(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '--close-on-error'])
+        self.assertEqual( config.close_on_error, True)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '-coe'])
+        self.assertEqual( config.close_on_error, True)
+
+        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50'])
+        self.assertEqual( config.close_on_error, False)
 
     def test_parse_args_invalid_option(self):
 

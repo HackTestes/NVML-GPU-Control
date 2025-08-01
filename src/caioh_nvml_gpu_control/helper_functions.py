@@ -114,6 +114,9 @@ OPTIONS
     --verbose OR -V
           When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
 
+    --close-on-error OR -coe
+          The program closes when it encounters an error. Useful when you want the service manager to restart the process instead of letting the program recover
+
 '''
     print(help_text)
 
