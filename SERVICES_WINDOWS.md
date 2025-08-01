@@ -3,7 +3,7 @@
 ## Setting up startup tasks
 
 > [!CAUTION]
-> You should secure the files under an admin only folder, so only authorized programs can modify the scripts
+> You should secure the files under an admin only folder, so only authorized programs can modify the scripts. If you follow the guide, this should be ok.
 
 This section will present some simple commands to setup services or tasks that start as admin and run the configured program with the configured settings. 
 

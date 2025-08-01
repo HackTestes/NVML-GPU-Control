@@ -77,25 +77,31 @@ chnvml list
 * Then you can select a target by name
 
 ```bash
-sudo chnvml fan-control -n 'NVIDIA GeForce RTX 4080'
+sudo chnvml control -n 'NVIDIA GeForce RTX 4080'
 ```
 
 * Or by UUID
 
 ```bash
-sudo chnvml fan-control -id GPU-00000000-0000-0000-0000-000000000000
+sudo chnvml control -id GPU-00000000-0000-0000-0000-000000000000
 ```
 
 * And the fan speed for each temperature level (**requires admin or root**)
 
 ```bash
-sudo chnvml fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+sudo chnvml control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100'
+```
+
+* You can also set a temperature or a power limit as well (**requires admin or root**)
+
+```bash
+sudo chnvml control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' -tl 65 -pl 280
 ```
 
 * You could also use the `--dry-run` for testing! (**no** admin or root)
 
 ```bash
-chnvml fan-control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
+chnvml control -n 'NVIDIA GeForce RTX 4080' -sp '10:35,20:50,30:50,35:100' --dry-run
 ```
 
 * You can also revert to the original fan state by runnig the following command or *rebooting the machine*
@@ -139,8 +145,8 @@ ACTIONS
     list
           List all available GPUs connected to the system by printing its name and UUID
 
-    fan-control
-          Monitor and controls the fan speed of the selected card (you must select a target card)
+    control
+         Allows the use of all controls in a single command/loop. Each setting is enabled by configuring its respective option: fan curve, power and temperature
 
     fan-info
           Shows information about fan speed
@@ -154,18 +160,8 @@ ACTIONS
     power-limit-info
           Shows information about the power limit of the selected GPU
 
-    power-control
-          Controls the power limit of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
-
     thresholds-info
           Shows information about temperature thresholds in dregrees Celsius of the selected GPU.
-
-    temp-control
-          Controls the temperature thresholds configuration of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
-
-    control-all
-         Allows the use of all controls in a single command/loop
-
 
 OPTIONS
 
@@ -176,7 +172,7 @@ OPTIONS
           Select a target GPU by its Universally Unique IDentifier (UUID). Example: --uuid "GPU-00000000-0000-0000-0000-000000000000". Note: UUID has preference over name
 
     --time-interval OR -ti <TIME_SECONDS>
-          Time period to wait before probing the GPU again. Works for all actions that run in a loop
+          Time period in seconds to wait before probing the GPU again. Works for all actions that run in a loop
 
     --retry-interval OR -ri <TIME_SECONDS>
           Time period in seconds to wait before trying to issue commands to the GPU again. Works for all actions that run in a loop
@@ -203,7 +199,7 @@ OPTIONS
           Sets the acoustic threshold in celsious (note that this is the same temperature limit used by GeForce Experience)
 
     --single-use OR -su
-          Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
+          Makes some actions work only once instead of in a loop
 
     --verbose OR -V
           When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)

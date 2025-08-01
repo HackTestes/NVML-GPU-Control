@@ -44,11 +44,6 @@ def main():
                     case 'get-thresholds-info':
                         main_funcs.print_thresholds_info(config)
 
-                    # Fan control
-                    case 'fan-control':
-                        main_funcs.fan_control(config)
-
-                    # Fan control
                     case 'fan-info':
                         main_funcs.print_fan_info(config)
 
@@ -58,16 +53,8 @@ def main():
                     case 'fan-policy-info':
                         main_funcs.print_fan_policy_info(config)
 
-                    # Power control
-                    case 'power-control':
-                        main_funcs.power_control(config)
-
-                    # Temperature threshold control
-                    case 'temp-control':
-                        main_funcs.temp_control(config)
-
                     # Enable everything
-                    case 'control-all':
+                    case 'control':
                         main_funcs.control_all(config)
                     
                 # If everything works fine, we don't need to retry

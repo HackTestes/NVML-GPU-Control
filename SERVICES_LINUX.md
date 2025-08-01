@@ -3,7 +3,7 @@
 ## Setting up startup services
 
 > [!CAUTION]
-> You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID on Linux with this program)
+> You should secure the files under an admin only folder, so only authorized programs can modify the scripts (and DON'T use SUID on Linux with this program). If you follow the guide, this should be ok.
 
 This section will present some simple commands to setup services that start as root and run the program with the configured settings.
 
@@ -69,5 +69,5 @@ sudo crontab -e
 2. Add the command (make the changes you want here)
 
 ```bash
-@reboot chnvml -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
+@reboot chnvml control -n "GPU_NAME" -pl 290 -tl 65 -sp "0:50,36:55,40:75,45:100"
 ```

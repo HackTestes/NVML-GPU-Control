@@ -80,17 +80,21 @@ def validate_config(config):
             error_print("You did not select a fan policy: autmatic or manual")
             raise InvalidConfig("No fan policy was selected")
 
-    # power-control needs a power limit configuration
-    if config.action == 'power-control':
-        if config.power_limit == 0:
-            error_print("You did not select a power limit")
-            raise InvalidConfig("No power limit was selected")
-
     # temp-control needs a power limit configuration
-    if config.action == 'temp-control':
+    if config.action == 'control':
+        if len(config.temp_speed_pair) == 0 and config.power_limit == 0 and config.acoustic_temp_limit == 0:
+            error_print("You did not select any setting, please use one")
+            raise InvalidConfig("No setting was selected")
+
+        # Print warnings just to let users know
+        if len(config.temp_speed_pair) == 0:
+            print(f'WARNING: There is no temperature-speed pairs configured')
+
+        if config.power_limit == 0:
+            print(f'WARNING: There is no power limit configured')
+        
         if config.acoustic_temp_limit == 0:
-            error_print("You did not select a temperature limit")
-            raise InvalidConfig("No temperature limit was selected")
+            print(f'WARNING: There is no temperature limit configured')
 
 
 def parse_cmd_args(args):
@@ -115,9 +119,6 @@ def parse_cmd_args(args):
         configuration.action = 'list'
         return configuration # It should stop here, ignore all other args
 
-    elif (action == 'fan-control'):
-        configuration.action = 'fan-control'
-
     elif (action == 'fan-info'):
         configuration.action = 'fan-info'
 
@@ -133,14 +134,8 @@ def parse_cmd_args(args):
     elif (action == 'thresholds-info'):
         configuration.action = 'get-thresholds-info'
 
-    elif (action == 'power-control'):
-        configuration.action = 'power-control'
-
-    elif (action == 'temp-control'):
-        configuration.action = 'temp-control'
-
-    elif (action == 'control-all'):
-        configuration.action = 'control-all'
+    elif (action == 'control'):
+        configuration.action = 'control'
 
     else:
         helper_functions.print_help()

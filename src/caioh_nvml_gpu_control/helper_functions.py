@@ -55,8 +55,8 @@ ACTIONS
     list
           List all available GPUs connected to the system by printing its name and UUID
 
-    fan-control
-          Monitor and controls the fan speed of the selected card (you must select a target card)
+    control
+         Allows the use of all controls in a single command/loop. Each setting is enabled by configuring its respective option: fan curve, power and temperature
 
     fan-info
           Shows information about fan speed
@@ -70,18 +70,8 @@ ACTIONS
     power-limit-info
           Shows information about the power limit of the selected GPU
 
-    power-control
-          Controls the power limit of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
-
     thresholds-info
           Shows information about temperature thresholds in dregrees Celsius of the selected GPU.
-
-    temp-control
-          Controls the temperature thresholds configuration of the selected GPU. It runs in a loop by default, but can run once using the --single-use option
-
-    control-all
-         Allows the use of all controls in a single command/loop
-
 
 OPTIONS
 
@@ -119,7 +109,7 @@ OPTIONS
           Sets the acoustic threshold in celsious (note that this is the same temperature limit used by GeForce Experience)
 
     --single-use OR -su
-          Makes some actions work only once insted of in a loop. This option is valid for: temp-control and power-control
+          Makes some actions work only once instead of in a loop
 
     --verbose OR -V
           When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
@@ -135,12 +125,16 @@ def list_gpus():
         print(f'Device {i} name : {pynvml.nvmlDeviceGetName(handle)} - UUID: {pynvml.nvmlDeviceGetUUID(handle)}')
 
 def print_GPU_info(gpu_handle):
-    log_helper(f"Driver Version: {pynvml.nvmlSystemGetDriverVersion()}")
+    log_helper(f"Driver Version : {pynvml.nvmlSystemGetDriverVersion()}")
     log_helper(f'Device name : {pynvml.nvmlDeviceGetName(gpu_handle)}')
     log_helper(f'Device UUID : {pynvml.nvmlDeviceGetUUID(gpu_handle)}')
     log_helper(f'Device fan speed : {pynvml.nvmlDeviceGetFanSpeed(gpu_handle)}%')
-    log_helper(f'Temperature {pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)}°C')
-    log_helper(f"Fan controller count {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
+    log_helper(f'Fan policy : {fan_policy_info_msg( get_fan_policy(gpu_handle) )}')
+    log_helper(f"Fan controller count : {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
+    log_helper(f'Current temperature : {pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)}°C')
+    log_helper(f'Temperature limit : {get_temperarure_thresholds(gpu_handle).current_acoustic}°C')
+    log_helper(f'Power limit : {get_current_power_limit_watts(gpu_handle)}W')
+    log_helper(f'Enforced power limit : {get_enforced_power_limit_watts(gpu_handle)}W')
 
 
 # Search for a GPU and return a handle
@@ -223,17 +217,6 @@ def print_fan_info(configuration):
     print(f'Fan constraints: Min {fan_constraints.min}% - Max {fan_constraints.max}%')
     print(f'{output_separator}')
 
-def fan_control(configuration):
-    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
-    print_GPU_info(gpu_handle)
-
-    # Infinite loop, one must kill the process to stop it
-    while(True):
-        fan_control_subroutine(gpu_handle, configuration)
-
-        time.sleep(configuration.time_interval)
-
-
 # Control GPU functions and monitor for changes (e.g. temperature)
 def fan_control_subroutine(gpu_handle, configuration):
 
@@ -280,13 +263,13 @@ def fan_control_subroutine(gpu_handle, configuration):
 def fan_policy_info_msg(fan_policy: int):
 
     if pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW == fan_policy:
-        return 'Current fan control policy is automatic'
+        return 'Automatic'
 
     elif pynvml.NVML_FAN_POLICY_MANUAL == fan_policy:
-        return 'Current fan control policy is manual'
+        return 'Manual'
 
     else:
-        return 'Unknown fan control policy'
+        return 'Unknown'
 
 def set_fan_policy(gpu_handle, policy, dry_run):
 
@@ -311,10 +294,11 @@ def get_fan_policy(gpu_handle):
 
     return current_policy.value
 
+
 def print_fan_policy_info(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
     print(f'{output_separator}')
-    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ))
+    print(f'Current fan policy is: {fan_policy_info_msg( get_fan_policy(gpu_handle) )}')
     print(f'{output_separator}')
 
 def fan_policy(configuration):
@@ -323,7 +307,7 @@ def fan_policy(configuration):
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
 
     # Get the current policy before setting anything
-    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ))
+    print(f'Current fan policy is: {fan_policy_info_msg( get_fan_policy(gpu_handle) )}')
 
     if target_fan_policy == 'automatic':
         set_fan_policy(gpu_handle, pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW, configuration.dry_run)
@@ -334,7 +318,7 @@ def fan_policy(configuration):
     print('New fan control policy set sucessfully!')
 
     # Get the new policy
-    print(fan_policy_info_msg( get_fan_policy(gpu_handle) ) + "\n")
+    print(f'Current fan policy is: {fan_policy_info_msg( get_fan_policy(gpu_handle) )}\n')
 
 # Power control
 
@@ -401,19 +385,6 @@ def power_control_subroutine(gpu_handle, target_power_limit, dry_run, verbose):
     # Only print log messages when necessary to avoid taking too much disk space
     if verbose == True or setting_changed == True:
         log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
-    
-
-def power_control(configuration):
-    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
-    print_GPU_info(gpu_handle)
-
-    while(True):
-        power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run, configuration.verbose)
-
-        if configuration.single_use == True:
-            break
-
-        time.sleep(configuration.time_interval)
 
 # Temperature control
 
@@ -504,20 +475,6 @@ def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run, ver
         log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
 
 
-def temp_control(configuration):
-
-    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
-    print_GPU_info(gpu_handle)
-
-    while(True):
-        temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run, configuration.verbose)
-
-        if configuration.single_use == True:
-            break
-
-        time.sleep(configuration.time_interval)
-
-
 def control_all(configuration):
 
     gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
@@ -525,14 +482,19 @@ def control_all(configuration):
 
     while(True):
 
-        # If this settings is different than the default, the user has enabled it
+        # The user has enabled it with an option to take effect
         if configuration.power_limit != 0:
             power_control_subroutine(gpu_handle, configuration.power_limit, configuration.dry_run, configuration.verbose)
 
-        # If this settings is different than the default, the user has enabled it
+        # The user has enabled it with an option to take effect
         if configuration.acoustic_temp_limit != 0:
             temp_control_subroutine(gpu_handle, configuration.acoustic_temp_limit, configuration.dry_run, configuration.verbose)
 
-        fan_control_subroutine(gpu_handle, configuration)
+        # The user has enabled it with an option to take effect
+        if len(configuration.temp_speed_pair) != 0:
+            fan_control_subroutine(gpu_handle, configuration)
+
+        if configuration.single_use == True:
+            break
 
         time.sleep(configuration.time_interval)
