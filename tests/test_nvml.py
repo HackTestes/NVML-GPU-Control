@@ -237,15 +237,15 @@ class TestMethods(unittest.TestCase):
         config = parse_args.parse_cmd_args(['.python_script', 'control', '-n', 'RTX 3080', '-sp', '0:50'])
         self.assertEqual(config.verbose, False)
 
-    def test_parse_args_option_close_on_error(self):
-        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '--close-on-error'])
-        self.assertEqual( config.close_on_error, True)
+    def test_parse_args_option_retry(self):
+        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '--retry'])
+        self.assertEqual(config.retry, True)
 
-        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '-coe'])
-        self.assertEqual( config.close_on_error, True)
+        config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50', '-rt'])
+        self.assertEqual(config.retry, True)
 
         config = parse_args.parse_cmd_args(['.python_script', 'control', '--name', 'RTX 4080', '-pl', '50'])
-        self.assertEqual( config.close_on_error, False)
+        self.assertEqual(config.retry, False)
 
     def test_parse_args_invalid_option(self):
 

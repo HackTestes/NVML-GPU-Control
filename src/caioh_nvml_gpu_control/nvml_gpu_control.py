@@ -63,14 +63,14 @@ def main():
             except Exception as error:
                 print(f"Logging error: {error}")
 
-                if config.close_on_error == True:
-                    raise error
-
-                else:
+                if config.retry == True:
                     # Clear all handles that nvml is holding, so errors won't persist across runs
                     nvmlShutdown()
                     print(f"Retrying in {config.retry_interval_s} seconds\n")
                     time.sleep(config.retry_interval_s)                
+
+                else:
+                    raise error
     
     # One should call shutdown with or without erros, this is why I am using finally
     finally:

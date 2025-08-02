@@ -204,8 +204,8 @@ OPTIONS
     --verbose OR -V
           When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
 
-    --close-on-error OR -coe
-          The program closes when it encounters an error. Useful when you want the service manager to restart the process instead of letting the program recover
+    --retry OR -rt
+          By default the program closes when it encounters an error, but this lets the program try to recover. It could be useful to let the service manaer restart the process
 
 ```
 
@@ -231,4 +231,6 @@ OPTIONS
 
 ### 2.1.0.0
 
-* Added a new option: `--close-on-error OR -coe`
+* Added a new option: `--retry OR -rt`
+
+* The program now halts by default when it encounters an error, allowing the service manager to restart the process
