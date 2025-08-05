@@ -129,6 +129,7 @@ def list_gpus():
 
 def print_GPU_info(gpu_handle):
     log_helper(f"Driver Version : {pynvml.nvmlSystemGetDriverVersion()}")
+    log_helper(f"NVML Version : {pynvml.nvmlSystemGetNVMLVersion ()}")
     log_helper(f'Device name : {pynvml.nvmlDeviceGetName(gpu_handle)}')
     log_helper(f'Device UUID : {pynvml.nvmlDeviceGetUUID(gpu_handle)}')
     log_helper(f'Device fan speed : {pynvml.nvmlDeviceGetFanSpeed(gpu_handle)}%')
