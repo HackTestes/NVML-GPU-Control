@@ -234,3 +234,15 @@ OPTIONS
 * Added a new option: `--retry OR -rt`
 
 * The program now halts by default when it encounters an error, allowing the service manager to restart the process
+
+### 2.1.1.1
+
+* NVML dependency update: 12.570.86 -> 13.580.65
+
+* It now reports the NVML version as well
+
+### 2.1.2.1
+
+* Temperature thresholds are now removed from initial information logs (it returns NOT_SUPPORTED on Linux 575.64.05, which caused all controls to fail)
+
+* It now reports the version of the program

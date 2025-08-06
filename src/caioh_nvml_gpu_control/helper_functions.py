@@ -4,6 +4,8 @@ import time
 import ctypes
 import sys
 
+caioh_gpu_control_version = "2.1.2.1"
+
 output_separator = '==============================================='
 
 class UnsupportedDriverVersion(Exception):
@@ -128,6 +130,7 @@ def list_gpus():
         print(f'Device {i} name : {pynvml.nvmlDeviceGetName(handle)} - UUID: {pynvml.nvmlDeviceGetUUID(handle)}')
 
 def print_GPU_info(gpu_handle):
+    log_helper(f"CaioH NVML GPU Control Version : {caioh_gpu_control_version}")
     log_helper(f"Driver Version : {pynvml.nvmlSystemGetDriverVersion()}")
     log_helper(f"NVML Version : {pynvml.nvmlSystemGetNVMLVersion ()}")
     log_helper(f'Device name : {pynvml.nvmlDeviceGetName(gpu_handle)}')
@@ -136,7 +139,7 @@ def print_GPU_info(gpu_handle):
     log_helper(f'Fan policy : {fan_policy_info_msg( get_fan_policy(gpu_handle) )}')
     log_helper(f"Fan controller count : {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
     log_helper(f'Current temperature : {pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)}°C')
-    log_helper(f'Temperature limit : {get_temperarure_thresholds(gpu_handle).current_acoustic}°C')
+    #log_helper(f'Temperature limit : {get_temperarure_thresholds(gpu_handle).current_acoustic}°C') # Removed for now. It returns NOT_SUPPORTED on some Linux machines
     log_helper(f'Power limit : {get_current_power_limit_watts(gpu_handle)}W')
     log_helper(f'Enforced power limit : {get_enforced_power_limit_watts(gpu_handle)}W')
 

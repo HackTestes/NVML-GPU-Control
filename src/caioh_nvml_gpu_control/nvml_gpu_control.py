@@ -4,7 +4,6 @@ import helper_functions as main_funcs
 import parse_args
 import time
 
-
 def main():
     
     # Getting a configuration obj
