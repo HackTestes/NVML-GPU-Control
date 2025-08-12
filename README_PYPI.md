@@ -205,7 +205,7 @@ OPTIONS
           When there are no settings changes, leg messages are omitted by default. This option enables them back (good for debugging)
 
     --retry OR -rt
-          By default the program closes when it encounters an error, but this lets the program try to recover. It could be useful to let the service manaer restart the process
+          By default the program closes when it encounters an error, but this lets the program try to recover. It could be useful to let the service manager restart the process
 
 ```
 
