@@ -246,3 +246,7 @@ OPTIONS
 * Temperature thresholds are now removed from initial information logs (it returns NOT_SUPPORTED on Linux 575.64.05, which caused all controls to fail)
 
 * It now reports the version of the program
+
+### 2.1.3.1
+
+* Control action now uses a separate worker process so it can better recover from failures (useful for retries)
