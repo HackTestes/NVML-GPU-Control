@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import Mock
 import sys
 import ctypes
+import pynvml
 sys.path.append('./src/caioh_nvml_gpu_control/') # Necessary so the tested files can all find each other from the projects root
 import parse_args
 import helper_functions as main_funcs
@@ -343,6 +344,123 @@ class TestMethods(unittest.TestCase):
         with self.assertRaises(parse_args.InvalidConfig):
             parse_args.parse_cmd_args(['.python_script', 'control','--name', 'RTX 4080'])
 
+# ------------------------------ NVML unit tests ------------------------------ #
+
+    # InsufficientPermissions or NotFound
+    # If I get this error, it means:
+    #  - That the function exists
+    #  - That it is supported
+    #  - And that the parameters are right
+    # Useful to test if the fuctions from the wrapper still works
+
+    def test_nvmlDeviceGetHandleByUUID(self):
+        with self.assertRaises(pynvml.NVMLError_NotFound):
+            pynvml.nvmlDeviceGetHandleByUUID("")
+
+    def test_nvmlDeviceGetCount(self):
+        gpu_count = pynvml.nvmlDeviceGetCount()
+        self.assertNotEqual(0, gpu_count)
+
+    # Must have at least one NVIDIA GPU installed
+    def test_nvmlDeviceGetHandleByIndex(self):
+        pynvml.nvmlDeviceGetHandleByIndex(0)
+
+    def test_nvmlDeviceGetName(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual('', pynvml.nvmlDeviceGetName(gpu_handle))
+
+    def test_nvmlDeviceGetUUID(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual('', pynvml.nvmlDeviceGetUUID(gpu_handle))
+
+    def test_nvmlSystemGetDriverVersion(self):
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual('', pynvml.nvmlSystemGetDriverVersion())
+
+    def test_nvmlSystemGetNVMLVersion(self):
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual('', pynvml.nvmlSystemGetNVMLVersion())
+
+    def test_nvmlDeviceGetFanSpeed(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual('', pynvml.nvmlDeviceGetFanSpeed(gpu_handle))
+
+    def test_nvmlDeviceGetNumFans(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(0, pynvml.nvmlDeviceGetNumFans(gpu_handle))
+
+    def test_get_fan_policy(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        fan_policy = main_funcs.get_fan_policy(gpu_handle)
+        self.assertTrue(fan_policy == pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW or fan_policy == pynvml.NVML_FAN_POLICY_MANUAL)
+
+    def test_nvmlDeviceGetTemperatureV(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(0, pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU))
+
+    def test_get_temperarure_thresholds(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).current_acoustic)
+        self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).min_acoustic)
+        self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).max_acoustic)
+
+        # Not in use
+        #self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).max_memory)
+        #self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).max_gpu)
+        #self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).shutdown)
+        #self.assertNotEqual(0, main_funcs.get_temperarure_thresholds(gpu_handle).slowdown)
+
+    def test_get_current_power_limit_watts(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(0, main_funcs.get_current_power_limit_watts(gpu_handle))
+
+    def test_get_enforced_power_limit_watts(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(0, main_funcs.get_enforced_power_limit_watts(gpu_handle))
+
+    def test_nvmlDeviceGetFanSpeed_v2(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(-1, pynvml.nvmlDeviceGetFanSpeed_v2(gpu_handle, 0))
+
+    def test_get_gpu_fan_speed_constraints(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+        # Don't care for the output as long as it is not empty or that it doesn't generate errors
+        self.assertNotEqual(-1, main_funcs.get_gpu_fan_speed_constraints(gpu_handle).min)
+        self.assertNotEqual(-1, main_funcs.get_gpu_fan_speed_constraints(gpu_handle).max)
+
+    def test_nvmlDeviceSetFanSpeed_v2(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+
+        with self.assertRaises(pynvml.NVMLError_NoPermission):
+            pynvml.nvmlDeviceSetFanSpeed_v2(gpu_handle, 0, 99)
+
+    def test_set_fan_policy(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+
+        with self.assertRaises(pynvml.NVMLError_NoPermission):
+            main_funcs.set_fan_policy(gpu_handle, pynvml.NVML_FAN_POLICY_TEMPERATURE_CONTINOUS_SW, False)
+
+    def test_set_power_limit(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+
+        with self.assertRaises(pynvml.NVMLError_NoPermission):
+            main_funcs.set_power_limit(gpu_handle, 150, False)
+
+    def test_set_temperature_thresholds(self):
+        gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+
+        with self.assertRaises(pynvml.NVMLError_NoPermission):
+            main_funcs.set_temperature_thresholds(gpu_handle, pynvml.NVML_TEMPERATURE_THRESHOLD_ACOUSTIC_CURR, 70, False)
+
 
 #    # GPU Functions - I will need to improve the tests later
 #
@@ -361,6 +479,7 @@ class TestMethods(unittest.TestCase):
 #        self.assertTrue(True)
 
 
-
 if __name__ == '__main__':
+    pynvml.nvmlInit()
     unittest.main()
+    pynvml.nvmlShutdown()
