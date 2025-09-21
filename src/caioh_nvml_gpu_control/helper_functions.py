@@ -258,7 +258,7 @@ def fan_control_subroutine(gpu_handle, configuration):
 
             # Only print log messages when necessary to avoid taking too much disk space
             if configuration.verbose == True or setting_changed == True:
-                log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
+                log_helper("\n" + "\n".join(log_msg) + "\n")
 
             # Match found and set, return now
             return
@@ -391,7 +391,7 @@ def power_control_subroutine(gpu_handle, target_power_limit, dry_run, verbose):
 
     # Only print log messages when necessary to avoid taking too much disk space
     if verbose == True or setting_changed == True:
-        log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
+        log_helper("\n" + "\n".join(log_msg) + "\n")
 
 # Temperature control
 
@@ -479,7 +479,7 @@ def temp_control_subroutine(gpu_handle, target_acoustic_temp_limit, dry_run, ver
 
     # Only print log messages when necessary to avoid taking too much disk space
     if verbose == True or setting_changed == True:
-        log_helper(f'{"\n" + "\n".join(log_msg) + "\n"}')
+        log_helper("\n" + "\n".join(log_msg) + "\n")
 
 
 def control_all(configuration):
