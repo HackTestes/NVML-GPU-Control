@@ -30,7 +30,7 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 
 To use it, you must have installed:
 
-* NVIDIA's proprietary drivers (>= v520)
+* NVIDIA's proprietary drivers (>= v555)
 * Python 3
 * [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (NVIDIA's official python bindings)
 
@@ -40,9 +40,10 @@ You will also need **admin/root** privileges to be able to **set anything**. Que
 
 Because of multiple reasons:
 
-1. NVIDIA smi doesn't change fan speed
-2. Can't use nvidia-settings under Wayland to control the fans
+1. nvidia-smi doesn't change fan speed
+2. Can't use nvidia-settings under Wayland to control the fans (it is possible now!)
 3. GeForce Experience needs internet to work and it's pretty bad
+4. The NVIDIA App doesn't allow for multiple temperature settings
 
 Now that NVIDIA added the functions to work on any CUDA supported card on drivers equal or higher than v520 (see Change Log [here](https://docs.nvidia.com/deploy/nvml-api/change-log.html#change-log)), it is possible to control GeForce cards' fans through NVML! This means that I can get perfect Wayland support as well, since NVML doesn't depend on a display server.
 

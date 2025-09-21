@@ -4,7 +4,7 @@ import time
 import ctypes
 import sys
 
-caioh_gpu_control_version = "2.1.2.1"
+caioh_gpu_control_version = "2.1.4.1"
 
 output_separator = '==============================================='
 
@@ -37,8 +37,8 @@ class FanSpeedConstraintsPercentage:
 def check_driver_version(driver_version_str):
     major = int(driver_version_str.split('.')[0])
 
-    if major < 520:
-        raise UnsupportedDriverVersion('Driver version is lower than 520')
+    if major < 555:
+        raise UnsupportedDriverVersion('Driver version is lower than 555')
 
 def log_helper(msg):
     print(f'LOG[{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}]: {msg}')

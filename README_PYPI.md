@@ -15,7 +15,7 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 
 To use it, you must have installed:
 
-* NVIDIA's proprietary drivers (>= v520)
+* NVIDIA's proprietary drivers (>= v555)
 * Python 3
 * [nvidia-ml-py](https://pypi.org/project/nvidia-ml-py/) (NVIDIA's official python bindings)
 
@@ -250,3 +250,8 @@ OPTIONS
 ### 2.1.3.1
 
 * Control action now uses a separate worker process so it can better recover from failures (useful for retries)
+
+### 2.1.4.1
+
+* Changed the required minimum driver version (`nvmlDeviceGetTemperature` was deprecated in favor of the newer function `nvmlDeviceGetTemperatureV`)
+* Fixed an error with f-string that can cause errors in some versions of python (see [GitHub PR](https://github.com/HackTestes/NVML-GPU-Control/pull/18))
