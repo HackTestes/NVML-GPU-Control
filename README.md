@@ -5,7 +5,6 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 <!--toc:start-->
 - [NVML GPU Control](#nvml-gpu-control)
   - [Disclaimer](#disclaimer)
-  - [Supported hardware](#supported-hardware)
   - [Dependencies](#dependencies)
   - [Why I am creating this project?](#why-i-am-creating-this-project)
   - [Installation](#installation)
@@ -21,10 +20,6 @@ This is a small program that uses the NVIDIA Management Library (NVML) to monito
 
 * This project is NOT endorsed or sponsored by NVIDIA
 * This project is independent and not affiliated to NVIDIA
-
-## Supported hardware
-
-* Any NVIDIA CUDA supported card with a driver higher or equal to version 520
 
 ## Dependencies
 
