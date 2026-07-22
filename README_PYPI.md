@@ -148,6 +148,9 @@ ACTIONS
     control
          Allows the use of all controls in a single command/loop. Each setting is enabled by configuring its respective option: fan curve, power and temperature
 
+    all-info
+         Shows all the available information (useful for when you don't want to query for each type of info individually)
+
     fan-info
           Shows information about fan speed
 
@@ -263,4 +266,4 @@ OPTIONS
 ### 2.2.0.0
 
 * Added a new action: `all-info`
-* Fixed a bug where the program reports the wrong program version
+* Fixed a bug where the program reports the wrong version
