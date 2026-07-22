@@ -287,6 +287,6 @@ See [DEVELOPMENT](DEVELOPMENT.md) for guindance about development or contributio
 
 ## Support
 
-I will be supporting this program as long as I have NVIDIA GPUs (especially because I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think is useful. You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
+I will be supporting this program as long as I have NVIDIA GPUs (especially because I am also dogfooding it). Don't expect new features as it has everything currently I need, but you can suggest new features that you think are useful. You can expect however bug fixes from me so my project remains compatible with the latest versions of NVML.
 
 If I loose the need for this software (aka change my hardware), I will make sure to update this notice.
