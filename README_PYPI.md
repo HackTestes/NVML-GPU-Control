@@ -259,3 +259,8 @@ OPTIONS
 ### 2.1.4.2
 
 * NVML dependency update: 13.580.65 -> 13.610.43
+
+### 2.2.0.0
+
+* Added a new action: `all-info`
+* Fixed a bug where the program reports the wrong program version

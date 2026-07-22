@@ -120,6 +120,9 @@ def parse_cmd_args(args):
         configuration.action = 'list'
         return configuration # It should stop here, ignore all other args
 
+    elif (action == 'all-info'):
+        configuration.action = 'get-all-info'
+
     elif (action == 'fan-info'):
         configuration.action = 'fan-info'
 

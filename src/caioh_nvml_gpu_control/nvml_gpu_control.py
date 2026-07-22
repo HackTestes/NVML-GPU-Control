@@ -58,6 +58,9 @@ def main():
         case 'list':
             main_funcs.list_gpus()
 
+        case 'get-all-info':
+            main_funcs.print_all_info(config)
+
         case 'get-power-limit-info':
             main_funcs.print_power_limit_info(config)
 

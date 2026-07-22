@@ -4,7 +4,7 @@ import time
 import ctypes
 import sys
 
-caioh_gpu_control_version = "2.1.4.1"
+caioh_gpu_control_version = "2.2.0.0"
 
 output_separator = '==============================================='
 
@@ -59,6 +59,9 @@ ACTIONS
 
     control
          Allows the use of all controls in a single command/loop. Each setting is enabled by configuring its respective option: fan curve, power and temperature
+
+    all-info
+         Shows all the available information (useful for when you don't want to query for each type of info individually)
 
     fan-info
           Shows information about fan speed
@@ -143,6 +146,25 @@ def print_GPU_info(gpu_handle):
     log_helper(f'Power limit : {get_current_power_limit_watts(gpu_handle)}W')
     log_helper(f'Enforced power limit : {get_enforced_power_limit_watts(gpu_handle)}W')
 
+
+def print_all_info(configuration):
+    gpu_handle = get_GPU_handle(configuration.gpu_name, configuration.gpu_uuid)
+
+    # I should reuse the "print_GPU_info()", but one of the functions might break on Linux. So it is just easier to copy-paste in this case (they can evolve separately)
+    print(f'{output_separator}')
+    log_helper(f"CaioH NVML GPU Control Version : {caioh_gpu_control_version}")
+    log_helper(f"Driver Version : {pynvml.nvmlSystemGetDriverVersion()}")
+    log_helper(f"NVML Version : {pynvml.nvmlSystemGetNVMLVersion ()}")
+    log_helper(f'Device name : {pynvml.nvmlDeviceGetName(gpu_handle)}')
+    log_helper(f'Device UUID : {pynvml.nvmlDeviceGetUUID(gpu_handle)}')
+    log_helper(f'Device fan speed : {pynvml.nvmlDeviceGetFanSpeed(gpu_handle)}%')
+    log_helper(f'Fan policy : {fan_policy_info_msg( get_fan_policy(gpu_handle) )}')
+    log_helper(f"Fan controller count : {pynvml.nvmlDeviceGetNumFans(gpu_handle)}")
+    log_helper(f'Current temperature : {pynvml.nvmlDeviceGetTemperatureV(gpu_handle, pynvml.NVML_TEMPERATURE_GPU)}°C')
+    log_helper(f'Temperature limit : {get_temperarure_thresholds(gpu_handle).current_acoustic}°C') # It returns NOT_SUPPORTED on some Linux machines
+    log_helper(f'Power limit : {get_current_power_limit_watts(gpu_handle)}W')
+    log_helper(f'Enforced power limit : {get_enforced_power_limit_watts(gpu_handle)}W')
+    print(f'{output_separator}')
 
 # Search for a GPU and return a handle
 
