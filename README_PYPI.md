@@ -255,3 +255,7 @@ OPTIONS
 
 * Changed the required minimum driver version (`nvmlDeviceGetTemperature` was deprecated in favor of the newer function `nvmlDeviceGetTemperatureV`)
 * Fixed an error with f-string that can cause errors in some versions of python (see [GitHub PR](https://github.com/HackTestes/NVML-GPU-Control/pull/18))
+
+### 2.1.4.2
+
+* NVML dependency update: 13.580.65 -> 13.610.43
